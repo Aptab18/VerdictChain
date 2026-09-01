@@ -2,49 +2,49 @@
   "dataset": "raw_subset.csv",
   "labelled_rows": 5000,
   "confusion": {
-    "tp": 947,
-    "fp": 111,
-    "fn": 1053,
-    "tn": 2889
+    "tp": 2000,
+    "fp": 179,
+    "fn": 0,
+    "tn": 2821
   },
-  "precision": 0.8951,
-  "recall": 0.4735,
-  "f1": 0.6194,
-  "accuracy": 0.7672,
-  "false_positive_rate": 0.037,
+  "precision": 0.9179,
+  "recall": 1.0,
+  "f1": 0.9572,
+  "accuracy": 0.9642,
+  "false_positive_rate": 0.0597,
   "per_class": [
     {
       "label": "BENIGN",
       "rows": 3000,
-      "detected": 111,
-      "rate": 0.037,
+      "detected": 179,
+      "rate": 0.0597,
       "is_attack": false
     },
     {
       "label": "DDoS",
       "rows": 1790,
-      "detected": 829,
-      "rate": 0.4631,
+      "detected": 1790,
+      "rate": 1.0,
       "is_attack": true
     },
     {
       "label": "FTP-Patator",
       "rows": 133,
-      "detected": 75,
-      "rate": 0.5639,
+      "detected": 133,
+      "rate": 1.0,
       "is_attack": true
     },
     {
       "label": "SSH-Patator",
       "rows": 77,
-      "detected": 43,
-      "rate": 0.5584,
+      "detected": 77,
+      "rate": 1.0,
       "is_attack": true
     }
   ],
   "consolidation": {
     "log_rows_examined": 5400,
-    "evidence_rows_cited": 1209,
-    "incidents_raised": 13
+    "evidence_rows_cited": 2329,
+    "incidents_raised": 12
   }
 }
