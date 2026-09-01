@@ -126,9 +126,11 @@ def incident_timeline(findings: List[Dict[str, Any]]) -> go.Figure | None:
     ))
     longest = max(seconds for _, _, seconds in bars)
     fig.update_layout(
-        title=dict(text="Incident duration", font=dict(size=13, color="#e6edf3")),
+        title=dict(text="How long each attack ran",
+                   font=dict(size=13, color="#e6edf3")),
         height=max(240, 34 * len(bars)), bargap=0.35,
-        xaxis=dict(title=dict(text="seconds", font=dict(size=11)),
+        xaxis=dict(title=dict(text="attack duration in seconds (first cited row → last)",
+                              font=dict(size=11)),
                    range=[0, longest * 1.45], gridcolor="#1b2230", showline=False),
         yaxis=dict(autorange="reversed", gridcolor="rgba(0,0,0,0)"),
         **CHART_LAYOUT)
@@ -281,6 +283,11 @@ right.plotly_chart(verification_donut(verified_ev, unverified_ev),
 timeline = incident_timeline(all_findings)
 if timeline is not None:
     st.plotly_chart(timeline, width="stretch", config={"displayModeBar": False})
+    st.caption(
+        "How long the attacker stayed active, taken from the log timestamps — not "
+        "how long the pipeline took to find it. A long bar is a slow-and-quiet "
+        "campaign pacing itself under burst thresholds; a short bar is a loud "
+        "flood. Both are caught.")
 
 # ── detection metrics ──────────────────────────────────────────────────────── #
 
