@@ -82,7 +82,18 @@ def verification_donut(verified: int, unverified: int) -> go.Figure:
 
 
 def incident_timeline(findings: List[Dict[str, Any]]) -> go.Figure | None:
-    """When each incident happened, spanning first to last cited row."""
+    """How long each incident ran, worst first.
+
+    This was an absolute-time timeline, which cannot work here: the corpus
+    mixes CICIDS2017 captures (July 2017) with synthetic demo logs (2026), so
+    the axis spanned nine years and every bar collapsed into an invisible
+    sliver. Incidents from disjoint captures never overlap in real time
+    anyway, so "when" carries no information the analyst can act on.
+
+    Duration does. It separates a 60-minute slow credential campaign from a
+    20-minute flood at a glance, and the absolute start time stays available
+    on the bar label and in the hover.
+    """
     bars = []
     for finding in findings:
         stamps = pd.to_datetime(
@@ -91,33 +102,34 @@ def incident_timeline(findings: List[Dict[str, Any]]) -> go.Figure | None:
         if len(stamps) == 0:
             continue
         start, end = stamps.min(), stamps.max()
-        if start == end:                       # a point in time still needs width
-            end = start + pd.Timedelta(minutes=2)
-        bars.append((finding, start, end))
+        minutes = (end - start).total_seconds() / 60
+        bars.append((finding, start, max(minutes, 0.5)))  # a single-row incident still needs width
 
     if not bars:
         return None
 
-    fig = go.Figure()
-    for finding, start, end in bars:
-        color = RISK_COLORS.get(finding["risk_level"], "#8b98a9")
-        fig.add_trace(go.Bar(
-            # Milliseconds, not a Timedelta: plotly serialises the figure to
-            # JSON and a Timedelta has no JSON representation.
-            base=[start], x=[(end - start).total_seconds() * 1000],
-            y=[finding["incident_id"]],
-            orientation="h", marker=dict(color=color, line=dict(width=0)),
-            width=0.6, showlegend=False,
-            customdata=[[finding["risk_level"], len(finding.get("evidence", [])),
-                         finding["risk_score"]]],
-            hovertemplate=("<b>%{y}</b><br>%{customdata[0]} · score %{customdata[2]}"
-                           "<br>%{customdata[1]} evidence rows"
-                           "<br>%{base|%Y-%m-%d %H:%M}<extra></extra>"),
-        ))
+    bars.sort(key=lambda b: -b[0]["risk_score"])
+
+    fig = go.Figure(go.Bar(
+        x=[minutes for _, _, minutes in bars],
+        y=[finding["incident_id"] for finding, _, _ in bars],
+        orientation="h", width=0.6,
+        marker=dict(color=[RISK_COLORS.get(f["risk_level"], "#8b98a9") for f, _, _ in bars],
+                    line=dict(width=0)),
+        text=[f"{minutes:.0f} min · {start:%d %b %H:%M}" for _, start, minutes in bars],
+        textposition="outside", textfont=dict(color="#8b98a9", size=11),
+        customdata=[[f["risk_level"], f["risk_score"], len(f.get("evidence", [])),
+                     f"{start:%Y-%m-%d %H:%M}"] for f, start, _ in bars],
+        hovertemplate=("<b>%{y}</b> · %{customdata[0]} · score %{customdata[1]}"
+                       "<br>%{x:.0f} minutes, %{customdata[2]} evidence rows"
+                       "<br>started %{customdata[3]}<extra></extra>"),
+    ))
+    longest = max(minutes for _, _, minutes in bars)
     fig.update_layout(
-        title=dict(text="Incident timeline", font=dict(size=13, color="#e6edf3")),
+        title=dict(text="Incident duration", font=dict(size=13, color="#e6edf3")),
         height=max(240, 34 * len(bars)), bargap=0.35,
-        xaxis=dict(gridcolor="#1b2230", showline=False),
+        xaxis=dict(title=dict(text="minutes", font=dict(size=11)),
+                   range=[0, longest * 1.45], gridcolor="#1b2230", showline=False),
         yaxis=dict(autorange="reversed", gridcolor="rgba(0,0,0,0)"),
         **CHART_LAYOUT)
     return fig

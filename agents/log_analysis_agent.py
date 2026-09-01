@@ -462,34 +462,55 @@ def _best_window(rows: List[Dict[str, Any]], window: timedelta, key=len) -> List
     return best
 
 
-def _sustained(
+def _sustained_runs(
     rows: List[Dict[str, Any]],
     window: timedelta,
     threshold: float,
     key=len,
-) -> Tuple[List[Dict[str, Any]], int]:
-    """Every row belonging to ANY window that meets `threshold`, plus the peak score.
+) -> List[Tuple[List[Dict[str, Any]], int]]:
+    """Split rows into separate bursts, each cited in full. One run per burst.
 
-    Detection and evidence are two different questions. The single busiest
-    window is enough to decide that an attack is happening, but a flood that
-    runs for half an hour spans dozens of windows -- citing only the best one
-    names a fraction of the attack and leaves the rest looking undetected.
-    Measured against CICIDS2017 ground truth that reads as a recall failure,
-    even though the incident itself was raised correctly.
+    Two questions were being answered by one window, and they need different
+    answers:
 
-    So the threshold still decides IF we alarm; this decides WHAT we cite.
-    Precision is unaffected: rows are only ever pulled in from windows that
+    IF we alarm -- the single busiest window decides that, and the threshold
+    below is unchanged.
+
+    WHAT we cite -- a flood that runs for half an hour spans dozens of windows.
+    Citing only the busiest one names a fraction of the attack and leaves the
+    rest looking undetected; against CICIDS2017 ground truth that reads as
+    mass false negatives even though the incident was raised correctly.
+
+    But unioning every qualifying window goes too far the other way: the same
+    host attacking on Tuesday and again on Friday collapses into one incident
+    spanning three days, which is useless to an analyst and unreadable on a
+    timeline. So the union is cut wherever the gap between consecutive rows
+    exceeds `window` -- inside a burst rows are dense by definition, so a gap
+    that large means a different burst.
+
+    Precision is untouched either way: rows only ever come from windows that
     already cleared the same bar.
     """
     covered: Dict[str, Dict[str, Any]] = {}
-    peak = 0
     for candidate in _sliding_windows(rows, window):
-        score = key(candidate)
-        peak = max(peak, int(score))
-        if score >= threshold:
+        if key(candidate) >= threshold:
             for row in candidate:
                 covered[row["row_id"]] = row
-    return sorted(covered.values(), key=lambda r: r["timestamp"]), peak
+    if not covered:
+        return []
+
+    ordered = sorted(covered.values(), key=lambda r: r["timestamp"])
+    runs: List[List[Dict[str, Any]]] = [[ordered[0]]]
+    for row in ordered[1:]:
+        if row["timestamp"] - runs[-1][-1]["timestamp"] > window:
+            runs.append([row])
+        else:
+            runs[-1].append(row)
+
+    return [
+        (run, max((int(key(c)) for c in _sliding_windows(run, window)), default=len(run)))
+        for run in runs
+    ]
 
 
 # --------------------------------------------------------------------------- #
@@ -501,8 +522,7 @@ def detect_brute_force(rows: List[Dict[str, Any]]) -> List[Finding]:
     findings: List[Finding] = []
     for source, source_rows in _group_by_source(rows).items():
         failures = [r for r in source_rows if r["event_type"] in FAILED_LOGIN_EVENTS]
-        cited, peak = _sustained(failures, BURST_WINDOW, FAILED_LOGIN_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(failures, BURST_WINDOW, FAILED_LOGIN_THRESHOLD):
             findings.append(_finding(
                 "brute_force", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -532,8 +552,7 @@ def detect_port_scan(rows: List[Dict[str, Any]]) -> List[Finding]:
     findings: List[Finding] = []
     for source, source_rows in _group_by_source(rows).items():
         probes = [r for r in source_rows if r["raw_fields"].get("dest_port") is not None]
-        cited, peak = _sustained(probes, BURST_WINDOW, PORT_SCAN_THRESHOLD, key=distinct_ports)
-        if cited:
+        for cited, peak in _sustained_runs(probes, BURST_WINDOW, PORT_SCAN_THRESHOLD, key=distinct_ports):
             findings.append(_finding(
                 "port_scan", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -565,10 +584,10 @@ def detect_traffic_spike(rows: List[Dict[str, Any]]) -> List[Finding]:
         if peak_volume < floor:
             continue
         # The source is a spike; now cite the whole flood, not one window of it.
-        cited, peak = _sustained(by_source[source], BURST_WINDOW, floor)
-        findings.append(_finding(
-            "traffic_spike", source, [r["row_id"] for r in cited], count=peak,
-        ))
+        for cited, peak in _sustained_runs(by_source[source], BURST_WINDOW, floor):
+            findings.append(_finding(
+                "traffic_spike", source, [r["row_id"] for r in cited], count=peak,
+            ))
     return findings
 
 
@@ -622,9 +641,8 @@ def detect_credential_stuffing(rows: List[Dict[str, Any]]) -> List[Finding]:
     findings: List[Finding] = []
     for source, source_rows in _group_by_source(rows).items():
         failures = [r for r in source_rows if r["event_type"] in FAILED_LOGIN_EVENTS]
-        cited, peak = _sustained(failures, BURST_WINDOW, CREDENTIAL_STUFFING_THRESHOLD,
-                                 key=distinct_users)
-        if cited:
+        for cited, peak in _sustained_runs(failures, BURST_WINDOW,
+                                           CREDENTIAL_STUFFING_THRESHOLD, key=distinct_users):
             findings.append(_finding(
                 "credential_stuffing", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -641,9 +659,8 @@ def detect_lateral_movement(rows: List[Dict[str, Any]]) -> List[Finding]:
     for source, source_rows in _group_by_source(rows).items():
         if not source.startswith(INTERNAL_PREFIXES):
             continue  # an external source fanning out is a scan, not lateral movement
-        cited, peak = _sustained(source_rows, BURST_WINDOW, LATERAL_MOVEMENT_THRESHOLD,
-                                 key=distinct_hosts)
-        if cited:
+        for cited, peak in _sustained_runs(source_rows, BURST_WINDOW,
+                                           LATERAL_MOVEMENT_THRESHOLD, key=distinct_hosts):
             findings.append(_finding(
                 "lateral_movement", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -717,8 +734,7 @@ def detect_mass_file_access(rows: List[Dict[str, Any]]) -> List[Finding]:
     findings: List[Finding] = []
     for source, source_rows in _group_by_source(rows).items():
         reads = [r for r in source_rows if r["raw_fields"].get("path")]
-        cited, peak = _sustained(reads, BURST_WINDOW, MASS_FILE_ACCESS_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(reads, BURST_WINDOW, MASS_FILE_ACCESS_THRESHOLD):
             findings.append(_finding(
                 "mass_file_access", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -730,8 +746,7 @@ def detect_repeated_access_denied(rows: List[Dict[str, Any]]) -> List[Finding]:
     findings: List[Finding] = []
     for source, source_rows in _group_by_source(rows).items():
         denials = [r for r in source_rows if r["event_type"] in DENIED_EVENTS]
-        cited, peak = _sustained(denials, BURST_WINDOW, ACCESS_DENIED_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(denials, BURST_WINDOW, ACCESS_DENIED_THRESHOLD):
             findings.append(_finding(
                 "repeated_access_denied", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -743,8 +758,7 @@ def detect_config_tampering(rows: List[Dict[str, Any]]) -> List[Finding]:
     findings: List[Finding] = []
     for source, source_rows in _group_by_source(rows).items():
         changes = [r for r in source_rows if r["event_type"] in CONFIG_EVENTS]
-        cited, peak = _sustained(changes, BURST_WINDOW, CONFIG_CHANGE_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(changes, BURST_WINDOW, CONFIG_CHANGE_THRESHOLD):
             findings.append(_finding(
                 "config_tampering", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -760,8 +774,7 @@ def detect_dns_tunneling(rows: List[Dict[str, Any]]) -> List[Finding]:
             if r["event_type"] in DNS_EVENTS
             and len(str(r["raw_fields"].get("query") or "")) >= DNS_QUERY_LENGTH
         ]
-        cited, peak = _sustained(long_queries, BURST_WINDOW, DNS_TUNNELING_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(long_queries, BURST_WINDOW, DNS_TUNNELING_THRESHOLD):
             findings.append(_finding(
                 "dns_tunneling", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -807,8 +820,7 @@ def detect_syn_flood(rows: List[Dict[str, Any]]) -> List[Finding]:
             if (_number(r, "syn_flag_count") or 0) >= 1
             and (_number(r, "bwd_packets") or 0) <= ONE_WAY_MAX_BWD_PACKETS
         ]
-        cited, peak = _sustained(half_open, BURST_WINDOW, SYN_FLOOD_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(half_open, BURST_WINDOW, SYN_FLOOD_THRESHOLD):
             findings.append(_finding(
                 "syn_flood", source, [r["row_id"] for r in cited], count=peak,
             ))
@@ -854,8 +866,7 @@ def detect_auth_service_flood(rows: List[Dict[str, Any]]) -> List[Finding]:
                 by_port.setdefault(port, []).append(row)
 
         for port, hits in by_port.items():
-            cited, peak = _sustained(hits, AUTH_FLOOD_WINDOW, AUTH_FLOOD_THRESHOLD)
-            if cited:
+            for cited, peak in _sustained_runs(hits, AUTH_FLOOD_WINDOW, AUTH_FLOOD_THRESHOLD):
                 findings.append(_finding(
                     "auth_service_flood", source, [r["row_id"] for r in cited],
                     count=peak,
@@ -873,8 +884,7 @@ def detect_unanswered_flows(rows: List[Dict[str, Any]]) -> List[Finding]:
             if (_number(r, "fwd_packets") or 0) >= 1
             and (_number(r, "bwd_packets") or 0) <= ONE_WAY_MAX_BWD_PACKETS
         ]
-        cited, peak = _sustained(silent, BURST_WINDOW, ONE_WAY_FLOW_THRESHOLD)
-        if cited:
+        for cited, peak in _sustained_runs(silent, BURST_WINDOW, ONE_WAY_FLOW_THRESHOLD):
             findings.append(_finding(
                 "unanswered_flows", source, [r["row_id"] for r in cited], count=peak,
             ))
