@@ -1,0 +1,20 @@
+# Secrets -- never commit the real API key
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Generated reports
+reports/output/
+*.pdf
