@@ -1,0 +1,83 @@
+[
+  {
+    "incident_id": "INC-001",
+    "theory": "Suspicious activity involving 10.0.0.66: 10 failed logins from 10.0.0.66 within a 5-minute window; a successful login from 10.0.0.66 immediately after the failed attempts; the attempts targeted the privileged account 'admin'; and activity from unrecognized device 'UNKNOWN-DEV-X'.",
+    "confidence": 0.95,
+    "cited_rows": [
+      "R0013",
+      "R0014",
+      "R0015",
+      "R0016",
+      "R0017",
+      "R0018",
+      "R0019",
+      "R0020",
+      "R0021",
+      "R0022",
+      "R0023"
+    ]
+  },
+  {
+    "incident_id": "INC-002",
+    "theory": "Suspicious activity involving 10.0.0.31: outbound transfer of 734.0 MB from 10.0.0.31; a data transfer at 02:52 on 2026-03-13, well outside working hours; access to sensitive path '/share/finance/payroll_2026.xlsx'; login by 10.0.0.31 at 02:47 on 2026-03-13, outside normal working hours; and activity from unrecognized device 'UNKNOWN-DEV-Z'.",
+    "confidence": 0.95,
+    "cited_rows": [
+      "R0063",
+      "R0064",
+      "R0065"
+    ]
+  },
+  {
+    "incident_id": "INC-003",
+    "theory": "Suspicious activity involving 192.168.4.77: 14 distinct destination ports probed by 192.168.4.77 within a 5-minute window.",
+    "confidence": 0.7,
+    "cited_rows": [
+      "R0024",
+      "R0025",
+      "R0026",
+      "R0027",
+      "R0028",
+      "R0029",
+      "R0030",
+      "R0031",
+      "R0032",
+      "R0033",
+      "R0034",
+      "R0035",
+      "R0036",
+      "R0037"
+    ]
+  },
+  {
+    "incident_id": "INC-004",
+    "theory": "Suspicious activity involving 203.0.113.9: 25 requests from 203.0.113.9 within a 5-minute window, far above the baseline.",
+    "confidence": 0.6,
+    "cited_rows": [
+      "R0038",
+      "R0039",
+      "R0040",
+      "R0041",
+      "R0042",
+      "R0043",
+      "R0044",
+      "R0045",
+      "R0046",
+      "R0047",
+      "R0048",
+      "R0049",
+      "R0050",
+      "R0051",
+      "R0052",
+      "R0053",
+      "R0054",
+      "R0055",
+      "R0056",
+      "R0057",
+      "R0058",
+      "R0059",
+      "R0060",
+      "R0061",
+      "R0062"
+    ]
+  }
+]
