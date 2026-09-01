@@ -1,0 +1,16 @@
+# Dark theme is set here, not fought with CSS overrides in the page.
+# Streamlit applies this before the first paint, so there is no light flash
+# and no need for !important rules in app.py.
+[theme]
+base = "dark"
+primaryColor = "#00d4ff"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#161b26"
+textColor = "#e6edf3"
+font = "sans serif"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

@@ -49,6 +49,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from agents import llm
+
 # --------------------------------------------------------------------------- #
 # Configuration
 # --------------------------------------------------------------------------- #
@@ -96,7 +98,24 @@ DNS_TUNNELING_THRESHOLD = 8          # long DNS queries inside BURST_WINDOW
 # --- flow-level thresholds (CICIDS2017-style NetFlow rows from D1) ---------- #
 SYN_FLOOD_THRESHOLD = 20             # half-open flows from one source inside BURST_WINDOW
 PACKET_RATE_THRESHOLD = 5_000.0      # packets/s in a single flow that looks like a flood
+# ...but packets/s is derived (packets / duration), so a 3-packet flow lasting
+# 4 microseconds reports 666,667 packets/s and is not a flood at all. Measured
+# against the labelled CICIDS subset, the rate alone was BENIGN 90% of the time
+# (1031/1142 hits) and the triggering flows had a median of 3 packets. Require
+# enough packets for the rate to mean anything.
+PACKET_RATE_MIN_PACKETS = 20         # flow must carry this many packets before its rate counts
 ONE_WAY_FLOW_THRESHOLD = 15          # unanswered flows inside BURST_WINDOW (scan signature)
+# Authentication services. Flow records carry no auth outcome, so a credential
+# attack cannot reach detect_brute_force on NetFlow data -- what survives is the
+# shape: one source hammering one auth port. This is the FTP-Patator (21) and
+# SSH-Patator (22) signature in CICIDS2017.
+AUTH_SERVICE_PORTS = {21: "FTP", 22: "SSH", 23: "Telnet", 445: "SMB", 3389: "RDP"}
+# Credential attacks are paced deliberately to stay under burst detection: in
+# the CICIDS subset both Patator campaigns run for a full hour and never put
+# more than 18 flows into any 5-minute window. So this detector gets its own,
+# much longer window instead of the shared BURST_WINDOW.
+AUTH_FLOOD_WINDOW = timedelta(minutes=30)
+AUTH_FLOOD_THRESHOLD = 20            # flows to one auth port inside AUTH_FLOOD_WINDOW
 ONE_WAY_MAX_BWD_PACKETS = 1          # a flow with no real reply
 
 # Strict gate: an incident must clear this combined confidence to be reported.
@@ -216,7 +235,54 @@ RULES: Dict[str, Dict[str, Any]] = {
         "weight": 0.65,
         "text": "{count} flows from {source} received no reply, the signature of a sweep",
     },
+    "auth_service_flood": {
+        "weight": 0.80,
+        "text": "{count} connection attempts from {source} into {detail}, a paced credential attack",
+    },
 }
+
+# MITRE ATT&CK mapping, one entry per rule: (tactic id, tactic, technique id, technique).
+# Defense SOC teams triage by tactic, so every detection carries its place in
+# the kill chain rather than only a free-text theory.
+MITRE_MAP: Dict[str, Tuple[str, str, str, str]] = {
+    "brute_force":                 ("TA0006", "Credential Access", "T1110", "Brute Force"),
+    "credential_stuffing":         ("TA0006", "Credential Access", "T1110.004", "Credential Stuffing"),
+    "auth_service_flood":          ("TA0006", "Credential Access", "T1110.001", "Password Guessing"),
+    "success_after_failures":      ("TA0006", "Credential Access", "T1110", "Brute Force"),
+    "privileged_account_targeted": ("TA0006", "Credential Access", "T1078.002", "Domain Accounts"),
+    "repeated_access_denied":      ("TA0006", "Credential Access", "T1110", "Brute Force"),
+    "port_scan":                   ("TA0007", "Discovery", "T1046", "Network Service Discovery"),
+    "unanswered_flows":            ("TA0007", "Discovery", "T1046", "Network Service Discovery"),
+    "lateral_movement":            ("TA0008", "Lateral Movement", "T1021", "Remote Services"),
+    "external_to_high_risk_port":  ("TA0001", "Initial Access", "T1133", "External Remote Services"),
+    "off_hours_login":             ("TA0001", "Initial Access", "T1078", "Valid Accounts"),
+    "unrecognized_device":         ("TA0001", "Initial Access", "T1078", "Valid Accounts"),
+    "privilege_escalation":        ("TA0004", "Privilege Escalation", "T1078", "Valid Accounts"),
+    "config_tampering":            ("TA0005", "Defense Evasion", "T1562.001", "Disable or Modify Tools"),
+    "mass_file_access":            ("TA0009", "Collection", "T1005", "Data from Local System"),
+    "sensitive_file_access":       ("TA0009", "Collection", "T1005", "Data from Local System"),
+    "large_outbound_transfer":     ("TA0010", "Exfiltration", "T1041", "Exfiltration Over C2 Channel"),
+    "off_hours_transfer":          ("TA0010", "Exfiltration", "T1041", "Exfiltration Over C2 Channel"),
+    "dns_tunneling":               ("TA0011", "Command and Control", "T1071.004", "DNS"),
+    "syn_flood":                   ("TA0040", "Impact", "T1498.001", "Direct Network Flood"),
+    "traffic_spike":               ("TA0040", "Impact", "T1498", "Network Denial of Service"),
+    "high_packet_rate":            ("TA0040", "Impact", "T1498", "Network Denial of Service"),
+}
+
+
+def mitre_for_rules(rules: List[str]) -> List[Dict[str, str]]:
+    """Distinct MITRE entries for the rules that fired, ordered by tactic id."""
+    seen: Dict[str, Dict[str, str]] = {}
+    for rule in rules:
+        entry = MITRE_MAP.get(rule)
+        if entry is None:
+            continue
+        tactic_id, tactic, technique_id, technique = entry
+        seen[technique_id] = {
+            "tactic_id": tactic_id, "tactic": tactic,
+            "technique_id": technique_id, "technique": technique,
+        }
+    return sorted(seen.values(), key=lambda m: (m["tactic_id"], m["technique_id"]))
 
 MAX_CONFIDENCE = 0.95
 
@@ -227,6 +293,9 @@ SUPPORTING_ONLY_RULES = frozenset({
     "sensitive_file_access",
     "privileged_account_targeted",
     "unrecognized_device",
+    # A fast flow is meaningful next to a scan or a flood, but on its own it is
+    # the single noisiest signal in the flow data -- see PACKET_RATE_MIN_PACKETS.
+    "high_packet_rate",
 })
 
 # --- Phase 2: LLM settings -------------------------------------------------- #
@@ -234,7 +303,9 @@ SUPPORTING_ONLY_RULES = frozenset({
 IPV4_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
 
 LLM_TIMEOUT_SECONDS = 20
-LLM_MAX_EVIDENCE_ROWS = 12   # rows sent to the model per incident, keeps prompts small
+LLM_MAX_EVIDENCE_ROWS = 8    # rows sent to the model per incident, keeps prompts small
+LLM_MAX_WORKERS = int(os.getenv("LLM_MAX_WORKERS", "4"))  # concurrent calls; free tiers cap tokens per minute
+LLM_MAX_INCIDENTS = int(os.getenv("LLM_MAX_INCIDENTS", "8"))  # most-confident clusters given an LLM theory
 LLM_CONFIDENCE_SHIFT = 0.15  # how far the model may move the rule-based confidence
 
 
@@ -271,7 +342,6 @@ def load_env(env_path: Optional[Path] = None) -> None:
 
 load_env()
 
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 
 # --------------------------------------------------------------------------- #
@@ -711,15 +781,51 @@ def detect_syn_flood(rows: List[Dict[str, Any]]) -> List[Finding]:
 
 
 def detect_high_packet_rate(rows: List[Dict[str, Any]]) -> List[Finding]:
-    """A single flow pushing packets far faster than any user session would."""
+    """A single flow pushing packets far faster than any user session would.
+
+    Guarded by PACKET_RATE_MIN_PACKETS: a high rate computed from a handful of
+    packets is a duration-rounding artifact, not a flood.
+    """
     findings: List[Finding] = []
     for row in rows:
         rate = _number(row, "flow_packets_per_s")
-        if rate is not None and rate >= PACKET_RATE_THRESHOLD:
-            findings.append(_finding(
-                "high_packet_rate", row["source"], [row["row_id"]],
-                count=int(rate), detail=f"{rate:,.0f} packets/s",
-            ))
+        if rate is None or rate < PACKET_RATE_THRESHOLD:
+            continue
+        packets = (_number(row, "fwd_packets") or 0) + (_number(row, "bwd_packets") or 0)
+        if packets < PACKET_RATE_MIN_PACKETS:
+            continue
+        findings.append(_finding(
+            "high_packet_rate", row["source"], [row["row_id"]],
+            count=int(rate), detail=f"{rate:,.0f} packets/s over {int(packets)} packets",
+        ))
+    return findings
+
+
+def detect_auth_service_flood(rows: List[Dict[str, Any]]) -> List[Finding]:
+    """Repeated flows from one source into a single authentication service.
+
+    Complements detect_brute_force, which needs a failed_login event type that
+    flow data never has. See AUTH_SERVICE_PORTS.
+    """
+    findings: List[Finding] = []
+    for source, source_rows in _group_by_source(rows).items():
+        by_port: Dict[int, List[Dict[str, Any]]] = {}
+        for row in source_rows:
+            try:
+                port = int(row["raw_fields"].get("dest_port"))
+            except (TypeError, ValueError):
+                continue
+            if port in AUTH_SERVICE_PORTS:
+                by_port.setdefault(port, []).append(row)
+
+        for port, hits in by_port.items():
+            window = _best_window(hits, AUTH_FLOOD_WINDOW)
+            if len(window) >= AUTH_FLOOD_THRESHOLD:
+                findings.append(_finding(
+                    "auth_service_flood", source, [r["row_id"] for r in window],
+                    count=len(window),
+                    detail=f"{AUTH_SERVICE_PORTS[port]} (port {port})",
+                ))
     return findings
 
 
@@ -763,6 +869,7 @@ DETECTORS = (
     detect_syn_flood,
     detect_high_packet_rate,
     detect_unanswered_flows,
+    detect_auth_service_flood,
 )
 
 
@@ -877,18 +984,12 @@ LLM_SYSTEM_PROMPT = (
 
 
 def _get_groq_client():
-    """Return a Groq client, or None when the key or the package is missing."""
-    api_key = os.getenv("GROQ_API_KEY", "").strip()
-    if not api_key or api_key.startswith("gsk_your_key"):
-        return None
-    try:
-        from groq import Groq
-    except ImportError:
-        return None
-    try:
-        return Groq(api_key=api_key, timeout=LLM_TIMEOUT_SECONDS)
-    except Exception:
-        return None
+    """Historical name. Returns a truthy sentinel when an LLM is usable.
+
+    Provider selection now lives in agents/llm.py; this keeps the existing call
+    sites and the --no-llm behaviour unchanged.
+    """
+    return llm if llm.is_available() else None
 
 
 def _evidence_digest(cited: List[str], index: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -939,17 +1040,12 @@ def generate_llm_theory(
         "evidence": digest,
     }
     try:
-        response = client.chat.completions.create(
-            model=GROQ_MODEL,
-            temperature=0.2,
-            max_tokens=250,
-            response_format={"type": "json_object"},
-            messages=[
-                {"role": "system", "content": LLM_SYSTEM_PROMPT},
-                {"role": "user", "content": json.dumps(payload)},
-            ],
-        )
-        parsed = json.loads(response.choices[0].message.content)
+        text, status = llm.complete(LLM_SYSTEM_PROMPT, json.dumps(payload),
+                                    max_tokens=250, json_mode=True,
+                                    timeout=LLM_TIMEOUT_SECONDS)
+        if text is None:
+            return None
+        parsed = json.loads(text)
     except Exception:
         return None
 
@@ -989,6 +1085,8 @@ def build_incidents(
     client = _get_groq_client() if use_llm else None
 
     incidents: List[Dict[str, Any]] = []
+    # (index into incidents, cluster, cited rows) for the optional LLM pass.
+    pending: List[Tuple[int, List[Finding], List[str]]] = []
     for cluster in correlate(findings, rows):
         cited = sorted(
             {row_id for finding in cluster for row_id in finding["rows"]},
@@ -1005,20 +1103,49 @@ def build_incidents(
         if confidence < MIN_INCIDENT_CONFIDENCE:
             continue
 
-        theory = build_theory(cluster)
-
-        if client is not None:
-            result = generate_llm_theory(cluster, cited, index, client)
-            if result is not None:
-                theory, llm_confidence = result
-                confidence = _blend_confidence(confidence, llm_confidence)
-
+        pending.append((len(incidents), cluster, cited))
         incidents.append({
             "incident_id": "",  # assigned below, after ordering
-            "theory": theory,
+            "theory": build_theory(cluster),
             "confidence": confidence,
             "cited_rows": cited,
+            # Which detectors fired, as data rather than only as prose. The
+            # normalized schema flattens every CICIDS flow to
+            # event_type=network_flow/severity=info, so the rule names are the
+            # only place the attack semantics survive -- the Investigation
+            # Agent scores risk from these.
+            "rules_fired": sorted({f["rule"] for f in cluster}),
+            # Kill-chain position, derived from the same rules.
+            "mitre": mitre_for_rules(sorted({f["rule"] for f in cluster})),
         })
+
+    # Optional LLM pass, run concurrently. One round trip per incident done in
+    # sequence is seconds each, which reads as a hung dashboard; these calls are
+    # independent and I/O-bound, so they overlap cleanly. The deterministic
+    # theory written above stays in place for anything the model cannot answer.
+    if client is not None and pending:
+        from concurrent.futures import ThreadPoolExecutor
+
+        def fetch(job):
+            position, cluster, cited = job
+            try:
+                return position, generate_llm_theory(cluster, cited, index, client)
+            except Exception:
+                return position, None
+
+        # Highest-confidence clusters first, then only as many as the token
+        # budget allows -- the rest keep their deterministic theory.
+        pending.sort(key=lambda job: -incidents[job[0]]["confidence"])
+        pending = pending[:LLM_MAX_INCIDENTS]
+
+        with ThreadPoolExecutor(max_workers=min(LLM_MAX_WORKERS, len(pending))) as pool:
+            for position, result in pool.map(fetch, pending):
+                if result is None:
+                    continue
+                theory, llm_confidence = result
+                incidents[position]["theory"] = theory
+                incidents[position]["confidence"] = _blend_confidence(
+                    incidents[position]["confidence"], llm_confidence)
 
     # Highest confidence first, so the dashboard's top row is the worst problem.
     incidents.sort(key=lambda inc: (-inc["confidence"], inc["cited_rows"][0]))

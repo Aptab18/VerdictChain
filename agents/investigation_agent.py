@@ -50,6 +50,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+from agents import llm
+
 # --------------------------------------------------------------------------- #
 # Configuration
 # --------------------------------------------------------------------------- #
@@ -90,9 +92,18 @@ def load_env(env_path: Optional[Path] = None) -> None:
 
 load_env()
 
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+LLM_TIMEOUT_SECONDS = 20
+# Prompt size is the binding constraint on free tiers (Groq allows only 8,000
+# tokens per MINUTE), so the evidence sent per incident is capped and the LLM
+# budget is spent on the highest-risk incidents first. Raise LLM_MAX_INCIDENTS
+# when running against a provider with room to spare.
+LLM_MAX_EVIDENCE_ROWS = 8   # representative rows sent per incident
+LLM_MAX_WORKERS = int(os.getenv("LLM_MAX_WORKERS", "4"))  # concurrent explanation calls
+LLM_MAX_INCIDENTS = int(os.getenv("LLM_MAX_INCIDENTS", "8"))  # highest-risk incidents explained by the LLM
 
 RISK_LEVELS = ("Low", "Medium", "High", "Critical")
+# Ceiling on the reported risk score -- see the comment in score_incident().
+MAX_RISK_SCORE = 0.97
 
 # How dangerous each event type is on its own (0.0 - 1.0).
 EVENT_RISK: Dict[str, float] = {
@@ -117,6 +128,35 @@ EVENT_RISK: Dict[str, float] = {
     "login": 0.20,
     "benign": 0.10,
     "normal": 0.10,
+}
+
+# Risk weight per Log Analysis Agent rule name. Looked up by EXACT rule name --
+# these keys must stay in sync with RULES in log_analysis_agent.py, and a rule
+# missing here falls back to the log row's event_type/severity rather than
+# silently matching the wrong entry by substring.
+RULE_RISK: Dict[str, float] = {
+    "large_outbound_transfer": 1.00,
+    "privilege_escalation": 0.95,
+    "syn_flood": 0.90,
+    "dns_tunneling": 0.85,
+    "brute_force": 0.85,
+    "credential_stuffing": 0.85,
+    "auth_service_flood": 0.80,
+    "success_after_failures": 0.80,
+    "lateral_movement": 0.80,
+    "external_to_high_risk_port": 0.80,
+    "config_tampering": 0.70,
+    "port_scan": 0.70,
+    "unanswered_flows": 0.70,
+    "mass_file_access": 0.65,
+    "traffic_spike": 0.65,
+    "off_hours_transfer": 0.65,
+    "repeated_access_denied": 0.55,
+    "high_packet_rate": 0.55,
+    "off_hours_login": 0.50,
+    "sensitive_file_access": 0.50,
+    "privileged_account_targeted": 0.50,
+    "unrecognized_device": 0.45,
 }
 
 # Fallback when event_type is unknown but the row carries a severity label.
@@ -270,10 +310,24 @@ def build_evidence(incident: Dict[str, Any],
     if not cited:
         cited = [c.get("row_id") for c in checks_raw if isinstance(c, dict)]
 
+    # The Verification Agent emits one check per citation, in order. When that
+    # holds, pair them positionally: the same row can legitimately be cited
+    # twice with different claims (one true, one false), and an id-keyed lookup
+    # would collapse the two and hide the failing one.
+    positional = len(checks_raw) == len(cited) and all(
+        isinstance(c, dict) for c in checks_raw)
+
     evidence: List[Dict[str, Any]] = []
-    for row_id in cited:
+    for position, citation in enumerate(cited):
+        # A citation is either a plain id or a rich claim {"row_id", <claims>}.
+        claims = citation if isinstance(citation, dict) else {}
+        row_id = claims.get("row_id") if claims else citation
+
         keys = _row_id_variants(row_id)
-        check = next((checks[k] for k in keys if k in checks), None)
+        if positional:
+            check = checks_raw[position]
+        else:
+            check = next((checks[k] for k in keys if k in checks), None)
         row = (check or {}).get("row") or next((log_index[k] for k in keys if k in log_index), None)
 
         if check is not None and "verified" in check:
@@ -296,6 +350,14 @@ def build_evidence(incident: Dict[str, Any],
             "severity": row.get("severity", ""),
             "source_file": row.get("source_file", ""),
             "summary": _summarize_row(row) if row else "row not found in normalized_logs.csv",
+            # Why verification failed, carried through from the Verification
+            # Agent: [{"field", "claimed", "actual"}]. The dashboard renders this
+            # as "the agent claimed X, the raw log says Y" -- the proof that the
+            # Verification Layer caught a false citation, not just a missing row.
+            "mismatches": (check or {}).get("mismatches") or [],
+            "exists": bool(row) if check is None else bool(check.get("exists", bool(row))),
+            # What the agent asserted about this row, when it asserted anything.
+            "claimed": {k: v for k, v in claims.items() if k != "row_id"},
         })
     return evidence
 
@@ -352,6 +414,16 @@ def score_incident(incident: Dict[str, Any],
     scoring_rows = verified_rows or evidence
     threat_weight = max((_row_weight(r) for r in scoring_rows), default=0.5)
 
+    # B1 passes rules_fired (e.g. ["port_scan","traffic_spike"]) — these carry
+    # the real attack semantics when event_type is generic ("network_flow").
+    # Exact-name lookup only: an unknown rule must fall through to the row-based
+    # weight, never fuzzy-match a different rule.
+    fired_rules = [_norm_key(r) for r in incident.get("rules_fired") or []]
+    unmapped = [r for r in fired_rules if r not in RULE_RISK]
+    for rule in fired_rules:
+        if rule in RULE_RISK:
+            threat_weight = max(threat_weight, RULE_RISK[rule])
+
     confidence = _clamp(_to_float(incident.get("confidence"), 0.5))
     confidence_factor = 0.55 + 0.45 * confidence
 
@@ -362,7 +434,13 @@ def score_incident(incident: Dict[str, Any],
     # A correlated cluster of rows is more convincing than a single row.
     volume_factor = 1.0 + min(0.15, 0.05 * max(0, len(verified_rows) - 1))
 
-    score = _clamp(threat_weight * confidence_factor * verification_factor * volume_factor)
+    # Capped below 1.0 deliberately. A detection system that prints "risk 1.00"
+    # is claiming certainty it cannot have: the evidence is a sample of the
+    # traffic, the rules are heuristics, and the analyst is still the decider.
+    # Leaving headroom keeps the number honest and keeps room to rank a genuinely
+    # worse incident above this one.
+    score = _clamp(threat_weight * confidence_factor * verification_factor * volume_factor,
+                   high=MAX_RISK_SCORE)
 
     if score >= 0.80:
         level = "Critical"
@@ -386,6 +464,9 @@ def score_incident(incident: Dict[str, Any],
         "verified_rows": len(verified_rows),
         "total_rows": total,
         "capped_by_verification": capped,
+        # Surfaced so a rule added to B1 without a RULE_RISK entry is visible
+        # instead of silently scoring on severity alone.
+        "unmapped_rules": unmapped,
     }
     return round(score, 3), level, breakdown
 
@@ -396,9 +477,12 @@ def score_incident(incident: Dict[str, Any],
 
 def recommend_action(evidence: List[Dict[str, Any]],
                      risk_level: str,
-                     verified_ratio: float) -> Dict[str, Any]:
+                     verified_ratio: float,
+                     incident: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     events = {_norm_key(e.get("event_type")) for e in evidence if e.get("event_type")}
-
+    # Also consider B1's rule names — they carry the real semantics for flow data.
+    if incident:
+        events |= {_norm_key(r) for r in incident.get("rules_fired") or []}
     action = rationale = None
     for families, act, why in ACTION_PLAYBOOK:
         if any(fam in ev or ev in fam for fam in families for ev in events if ev):
@@ -480,50 +564,49 @@ def _llm_explanation(incident: Dict[str, Any],
                      evidence: List[Dict[str, Any]],
                      risk_level: str,
                      risk_score: float) -> Tuple[Optional[str], str]:
-    """Ask Groq for the analyst-facing explanation. Returns (text, source_tag)."""
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key:
-        return None, "template_no_api_key"
-    try:
-        from groq import Groq  # imported lazily so the agent runs without the SDK
-    except ImportError:
-        return None, "template_groq_not_installed"
+    """Ask the configured LLM for the analyst-facing explanation.
+
+    Returns (text, source_tag). Provider selection lives in agents/llm.py.
+    """
+    if not llm.is_available():
+        return None, "template_no_llm"
 
     verified = [e for e in evidence if e["verified"]]
     if not verified:
         return None, "template_no_verified_evidence"
 
+    # Send a sample, not the whole incident. INC-002 cites 829 rows, which is a
+    # ~64,000-token prompt -- eight times the entire per-minute token budget on
+    # Groq's free tier, so it could never succeed and it starved every other
+    # incident of budget too. A handful of representative rows is all the model
+    # needs to write the summary, and the row count tells it the real scale.
+    sample = [{k: row.get(k) for k in
+               ("row_id", "timestamp", "source", "event_type", "severity")}
+              for row in verified[:LLM_MAX_EVIDENCE_ROWS]]
+
     payload = {
         "theory": incident.get("theory", ""),
         "risk_level": risk_level,
         "risk_score": risk_score,
-        "verified_evidence": verified,
-        "unverified_row_ids": [e["row_id"] for e in evidence if not e["verified"]],
+        "verified_evidence_sample": sample,
+        "verified_evidence_total": len(verified),
+        "unverified_row_ids": [e["row_id"] for e in evidence if not e["verified"]][:10],
     }
     system = (
         "You are a SOC analyst writing an incident summary. Use ONLY the JSON "
-        "given to you. Never invent an IP address, timestamp, username or row id "
-        "that is not in the verified_evidence list. Write 3-5 plain-English "
+        "given to you. verified_evidence_sample is a SAMPLE of "
+        "verified_evidence_total rows -- cite the scale from that total, and "
+        "never invent an IP address, timestamp, username or row id that is not "
+        "in the sample. Write 3-5 plain-English "
         "sentences: what happened, which verified rows show it, and why it is "
         "rated at this risk level. Do not recommend an action. No markdown."
     )
-    try:
-        client = Groq(api_key=api_key)
-        response = client.chat.completions.create(
-            model=GROQ_MODEL,
-            temperature=0.2,
-            max_tokens=400,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": json.dumps(payload, default=str)},
-            ],
-        )
-        text = (response.choices[0].message.content or "").strip()
-    except Exception as exc:                       # network / quota / model errors
-        return None, "template_llm_error:" + type(exc).__name__
+    prompt = json.dumps(payload, default=str)
+    text, status = llm.complete(system, prompt, max_tokens=400,
+                                timeout=LLM_TIMEOUT_SECONDS)
+    if text is None:
+        return None, "template_llm_" + status
 
-    if not text:
-        return None, "template_empty_response"
     if not _ground_check(text, evidence, json.dumps(payload, default=str)):
         # The model referenced data that is not in the verified evidence.
         return None, "template_llm_ungrounded"
@@ -562,9 +645,20 @@ def investigate(incident: Dict[str, Any],
         "verified": bool(incident.get("verified", total > 0 and verified_ratio == 1.0)),
         "verified_ratio": round(verified_ratio, 3),
         "theory": incident.get("theory", ""),
+        # Carried through from the Log Analysis Agent so the dashboard can show
+        # which detectors fired and where they sit in the MITRE kill chain.
+        "rules_fired": incident.get("rules_fired") or [],
+        "mitre": incident.get("mitre") or [],
+        # Set only by the red-team drill, so the dashboard can label a finding
+        # as a deliberate test and nobody mistakes it for a real detection.
+        "drill_injected": bool(incident.get("drill_injected")),
+        # Pre-verification confidence, kept so the transcript can show the
+        # adjustment the Verification Agent actually made rather than assert one.
+        "original_confidence": round(_clamp(_to_float(
+            incident.get("original_confidence", incident.get("confidence")), 0.5)), 3),
         "explanation": explanation,
         "explanation_source": source,
-        "recommended_action": recommend_action(evidence, risk_level, verified_ratio),
+        "recommended_action": recommend_action(evidence, risk_level, verified_ratio, incident),
         "evidence": evidence,
         "score_breakdown": breakdown,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -574,11 +668,48 @@ def investigate(incident: Dict[str, Any],
 def investigate_all(incidents: Iterable[Dict[str, Any]],
                     log_path: Optional[Path] = None,
                     use_llm: bool = True) -> List[Dict[str, Any]]:
-    """Investigate a batch of incidents, worst first (handy for the dashboard)."""
+    """Investigate a batch of incidents, worst first (handy for the dashboard).
+
+    With the LLM on, each incident costs one network round trip. Run sequentially
+    that is seconds per incident and the dashboard just appears to hang, so the
+    explanations are fetched concurrently. Scoring and verification are unaffected:
+    they are pure functions over per-incident data with no shared mutable state.
+    """
+    incidents = list(incidents)
     log_index = load_log_index(log_path)
-    findings = [investigate(inc, log_index=log_index, use_llm=use_llm) for inc in incidents]
+
+    # Score everything deterministically first. This is the demo-safe path and
+    # it is what decides risk -- the LLM never touches the score.
+    findings = [investigate(inc, log_index=log_index, use_llm=False)
+                for inc in incidents]
     findings.sort(key=lambda f: (RISK_LEVELS.index(f["risk_level"]), f["risk_score"]),
                   reverse=True)
+
+    if not use_llm:
+        return findings
+
+    # Then spend the limited token budget on the incidents an analyst will
+    # actually open. Writing prose for a Low-risk incident nobody expands costs
+    # the same tokens as the Critical one at the top, and on an 8,000-token/min
+    # tier that trade is what turns a 12-second run into a 90-second one.
+    from concurrent.futures import ThreadPoolExecutor
+
+    targets = findings[:LLM_MAX_INCIDENTS]
+
+    def explain(finding: Dict[str, Any]) -> None:
+        text, source = _llm_explanation(
+            {"theory": finding.get("theory", "")}, finding["evidence"],
+            finding["risk_level"], finding["risk_score"])
+        if text is not None:
+            finding["explanation"] = text
+        finding["explanation_source"] = source
+
+    with ThreadPoolExecutor(max_workers=min(LLM_MAX_WORKERS, len(targets))) as pool:
+        list(pool.map(explain, targets))
+
+    for finding in findings[LLM_MAX_INCIDENTS:]:
+        finding["explanation_source"] = "template_llm_budget"
+
     return findings
 
 
