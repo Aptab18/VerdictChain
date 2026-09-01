@@ -1,0 +1,11 @@
+row_id,timestamp,source,event_type,severity,raw_fields,source_file
+R001,2026-08-30 09:12:03,192.168.1.10,normal_login,low,"{""dest_ip"": ""10.0.0.5"", ""protocol"": ""TCP"", ""bytes"": 512}",normal_baseline.csv
+R002,2026-08-30 09:14:11,192.168.1.11,normal_login,low,"{""dest_ip"": ""10.0.0.5"", ""protocol"": ""TCP"", ""bytes"": 480}",normal_baseline.csv
+R003,2026-08-30 03:47:52,192.168.1.55,off_hours_login,medium,"{""dest_ip"": ""10.0.0.5"", ""protocol"": ""TCP"", ""bytes"": 640, ""user"": ""jsmith""}",demo_logs.csv
+R004,2026-08-30 03:48:10,192.168.1.55,off_hours_login,medium,"{""dest_ip"": ""10.0.0.5"", ""protocol"": ""TCP"", ""bytes"": 640, ""user"": ""jsmith""}",demo_logs.csv
+R005,2026-08-30 11:02:00,203.0.113.9,traffic_spike,high,"{""dest_ip"": ""10.0.0.7"", ""protocol"": ""UDP"", ""bytes"": 985000, ""packet_count"": 15000}",demo_logs.csv
+R006,2026-08-30 11:02:05,203.0.113.9,traffic_spike,high,"{""dest_ip"": ""10.0.0.7"", ""protocol"": ""UDP"", ""bytes"": 1020000, ""packet_count"": 15400}",demo_logs.csv
+R007,2026-08-30 11:02:11,203.0.113.9,traffic_spike,high,"{""dest_ip"": ""10.0.0.7"", ""protocol"": ""UDP"", ""bytes"": 998000, ""packet_count"": 15200}",demo_logs.csv
+R008,2026-08-30 14:20:44,192.168.1.20,normal_traffic,low,"{""dest_ip"": ""10.0.0.9"", ""protocol"": ""TCP"", ""bytes"": 320}",normal_baseline.csv
+R009,2026-08-30 16:05:19,198.51.100.23,port_scan,critical,"{""dest_ip"": ""10.0.0.1"", ""protocol"": ""TCP"", ""ports_scanned"": 42}",demo_logs.csv
+R010,2026-08-30 16:05:22,198.51.100.23,port_scan,critical,"{""dest_ip"": ""10.0.0.1"", ""protocol"": ""TCP"", ""ports_scanned"": 51}",demo_logs.csv
