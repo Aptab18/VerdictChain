@@ -1,12 +1,12 @@
 [
   {
-    "incident_id": "INC-004",
+    "incident_id": "INC-005",
     "risk_level": "Critical",
-    "risk_score": 0.97,
-    "confidence": 0.91,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "An unrecognized device from source 91.203.44.17 is performing repeated failed HTTPS login attempts targeting the admin username on 10.0.0.10.",
+    "risk_score": 0.953,
+    "confidence": 0.704,
+    "verified": false,
+    "verified_ratio": 0.926,
+    "theory": "Suspicious activity involving 91.203.44.17: 50 requests from 91.203.44.17 within a 5-minute window, far above the baseline; and activity from unrecognized device 'Unknown-Device'. The agent additionally claims row D055 was a printer_maintenance event; and claims row D068 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900043, a row id that looks real but does not exist.",
     "rules_fired": [
       "traffic_spike",
       "unrecognized_device"
@@ -25,13 +25,13 @@
         "technique": "Network Denial of Service"
       }
     ],
-    "drill_injected": false,
-    "original_confidence": 0.91,
-    "explanation": "An unrecognized device from source 91.203.44.17 performed repeated failed HTTPS login attempts targeting the admin username on 10.0.0.10. This malicious activity is demonstrated across 8 sampled rows of a total 50 verified evidence records, starting with row D051 at 2026-09-01T10:21:15 and concluding with row D058 at 2026-09-01T10:21:29. It is rated at a critical risk level with a score of 0.97 due to the high severity and relentless nature of the login events targeting administrative access.",
-    "explanation_source": "llm",
+    "drill_injected": true,
+    "original_confidence": 0.76,
+    "explanation": "Suspicious activity involving 91.203.44.17: 50 requests from 91.203.44.17 within a 5-minute window, far above the baseline; and activity from unrecognized device 'Unknown-Device'. The agent additionally claims row D055 was a printer_maintenance event; and claims row D068 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900043, a row id that looks real but does not exist. This incident is rated Critical (risk score 0.95). The activity involves source(s) 91.203.44.17 and event type(s) login. Verified supporting evidence: row D051 (2026-09-01T10:21:15 | 91.203.44.17 | login (severity: high)), row D052 (2026-09-01T10:21:17 | 91.203.44.17 | login (severity: high)), row D053 (2026-09-01T10:21:19 | 91.203.44.17 | login (severity: high)), row D054 (2026-09-01T10:21:21 | 91.203.44.17 | login (severity: high)), row D055 (2026-09-01T10:21:23 | 91.203.44.17 | login (severity: high)). Warning: 4 cited row(s) failed verification (D055, D068, R999999-GHOST, R900043); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
       "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
@@ -685,728 +685,96 @@
         "mismatches": [],
         "exists": true,
         "claimed": {}
+      },
+      {
+        "row_id": "D055",
+        "verified": false,
+        "timestamp": "2026-09-01T10:21:23",
+        "source": "91.203.44.17",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T10:21:23 | 91.203.44.17 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "login"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "D068",
+        "verified": false,
+        "timestamp": "2026-09-01T10:21:49",
+        "source": "91.203.44.17",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T10:21:49 | 91.203.44.17 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "91.203.44.17"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900043",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
       }
     ],
     "score_breakdown": {
       "threat_weight": 1.0,
-      "confidence_factor": 0.96,
-      "verification_factor": 1.0,
+      "confidence_factor": 0.867,
+      "verification_factor": 0.956,
       "volume_factor": 1.15,
       "verified_rows": 50,
-      "total_rows": 50,
+      "total_rows": 54,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
-    "incident_id": "INC-005",
+    "incident_id": "INC-001",
     "risk_level": "Critical",
-    "risk_score": 0.938,
-    "confidence": 0.91,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "An unrecognized device using source IP 45.77.21.90 and user01 is performing a data exfiltration or large transfer via TCP to destination IP 10.0.0.20, generating continuous traffic spikes.",
-    "rules_fired": [
-      "traffic_spike",
-      "unrecognized_device"
-    ],
-    "mitre": [
-      {
-        "tactic_id": "TA0001",
-        "tactic": "Initial Access",
-        "technique_id": "T1078",
-        "technique": "Valid Accounts"
-      },
-      {
-        "tactic_id": "TA0040",
-        "tactic": "Impact",
-        "technique_id": "T1498",
-        "technique": "Network Denial of Service"
-      }
-    ],
-    "drill_injected": false,
-    "original_confidence": 0.91,
-    "explanation": "An unrecognized device using source IP 45.77.21.90 and user01 performed a data exfiltration or large transfer via TCP to destination IP 10.0.0.20, generating continuous traffic spikes. This activity is demonstrated across a sample of 8 verified evidence rows out of a total of 50, specifically within row IDs D101 through D108 spanning timestamps from 2026-09-01T14:32:10 to 2026-09-01T14:32:17. The incident is rated at a Critical risk level with a risk score of 0.938 due to the high severity network requests continuously originating from the external source IP.",
-    "explanation_source": "llm",
-    "recommended_action": {
-      "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
-      "auto_executed": false,
-      "requires_analyst_approval": true
-    },
-    "evidence": [
-      {
-        "row_id": "D101",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:10",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:10 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D102",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:11",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:11 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D103",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:12",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:12 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D104",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:13",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:13 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D105",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:14",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:14 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D106",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:15",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:15 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D107",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:16",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:16 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D108",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:17",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:17 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D109",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:18",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:18 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D110",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:19",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:19 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D111",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:20",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:20 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D112",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:21",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:21 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D113",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:22",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:22 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D114",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:23",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:23 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D115",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:24",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:24 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D116",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:25",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:25 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D117",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:26",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:26 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D118",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:27",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:27 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D119",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:28",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:28 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D120",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:29",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:29 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D121",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:30",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:30 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D122",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:31",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:31 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D123",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:32",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:32 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D124",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:33",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:33 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D125",
-        "verified": true,
-        "timestamp": "2026-09-01T14:32:34",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:32:34 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D126",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:35",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:35 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D127",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:36",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:36 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D128",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:37",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:37 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D129",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:38",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:38 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D130",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:39",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:39 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D131",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:40",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:40 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D132",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:41",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:41 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D133",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:42",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:42 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D134",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:43",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:43 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D135",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:44",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:44 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D136",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:45",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:45 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D137",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:46",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:46 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D138",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:47",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:47 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D139",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:48",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:48 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D140",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:49",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:49 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D141",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:50",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:50 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D142",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:51",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:51 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D143",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:52",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:52 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D144",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:53",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:53 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D145",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:54",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:54 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D146",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:55",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:55 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D147",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:56",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:56 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D148",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:57",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:57 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D149",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:58",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:58 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D150",
-        "verified": true,
-        "timestamp": "2026-09-01T14:33:59",
-        "source": "45.77.21.90",
-        "event_type": "network_request",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T14:33:59 | 45.77.21.90 | network_request (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      }
-    ],
-    "score_breakdown": {
-      "threat_weight": 0.85,
-      "confidence_factor": 0.96,
-      "verification_factor": 1.0,
-      "volume_factor": 1.15,
-      "verified_rows": 50,
-      "total_rows": 50,
-      "capped_by_verification": false,
-      "unmapped_rules": []
-    },
-    "generated_at": "2026-09-01T09:07:22+00:00"
-  },
-  {
-    "incident_id": "INC-002",
-    "risk_level": "Critical",
-    "risk_score": 0.899,
-    "confidence": 0.95,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Source IP 172.16.0.1 is conducting an FTP brute-force attack (labeled FTP-Patator) against destination IP 192.168.10.50 on port 21, triggering auth_service_flood and traffic_spike rules.",
+    "risk_score": 0.86,
+    "confidence": 0.893,
+    "verified": false,
+    "verified_ratio": 0.971,
+    "theory": "Suspicious activity involving 172.16.0.1: 75 connection attempts from 172.16.0.1 into FTP (port 21), a paced credential attack; and 21 requests from 172.16.0.1 within a 5-minute window, far above the baseline. The agent additionally cites R999999-GHOST, which was never logged; and cites R900013, a row id that looks real but does not exist; and claims row R004543 occurred at 1999-01-01T00:00:00; and claims row R002875 was a printer_maintenance event.",
     "rules_fired": [
       "auth_service_flood",
       "traffic_spike"
@@ -1425,13 +793,13 @@
         "technique": "Network Denial of Service"
       }
     ],
-    "drill_injected": false,
-    "original_confidence": 0.95,
-    "explanation": "Source IP 172.16.0.1 conducted an FTP brute-force attack, labeled FTP-Patator, targeting destination IP 192.168.10.50 on port 21, which triggered auth_service_flood and traffic_spike rules. This malicious activity is demonstrated across 8 sampled rows out of a total of 133 verified evidence rows, including sample row identifiers such as R000048, R004073, R002880, R003687, R004584, R002944, R004813, and R002037, all occurring between timestamps 2017-07-04T09:19:00 and 2017-07-04T09:22:00. This incident is rated at a Critical risk level with a risk score of 0.899 due to the intensive authentication flooding and traffic disruption directed at the target service.",
-    "explanation_source": "llm",
+    "drill_injected": true,
+    "original_confidence": 0.92,
+    "explanation": "Suspicious activity involving 172.16.0.1: 75 connection attempts from 172.16.0.1 into FTP (port 21), a paced credential attack; and 21 requests from 172.16.0.1 within a 5-minute window, far above the baseline. The agent additionally cites R999999-GHOST, which was never logged; and cites R900013, a row id that looks real but does not exist; and claims row R004543 occurred at 1999-01-01T00:00:00; and claims row R002875 was a printer_maintenance event. This incident is rated Critical (risk score 0.86). The activity involves source(s) 172.16.0.1 and event type(s) network_flow. Verified supporting evidence: row R000048 (2017-07-04T09:19:00 | 172.16.0.1 | network_flow (severity: info)), row R004073 (2017-07-04T09:19:00 | 172.16.0.1 | network_flow (severity: info)), row R002880 (2017-07-04T09:20:00 | 172.16.0.1 | network_flow (severity: info)), row R003687 (2017-07-04T09:20:00 | 172.16.0.1 | network_flow (severity: info)), row R004584 (2017-07-04T09:20:00 | 172.16.0.1 | network_flow (severity: info)). Warning: 4 cited row(s) failed verification (R999999-GHOST, R900013, R004543, R002875); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
       "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
@@ -3164,28 +2532,864 @@
         "mismatches": [],
         "exists": true,
         "claimed": {}
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900013",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R004543",
+        "verified": false,
+        "timestamp": "2017-07-04T09:31:00",
+        "source": "172.16.0.1",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T09:31:00 | 172.16.0.1 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2017-07-04T09:31:00"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "R002875",
+        "verified": false,
+        "timestamp": "2017-07-04T09:36:00",
+        "source": "172.16.0.1",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T09:36:00 | 172.16.0.1 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "network_flow"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
       }
     ],
     "score_breakdown": {
       "threat_weight": 0.8,
-      "confidence_factor": 0.978,
-      "verification_factor": 1.0,
+      "confidence_factor": 0.952,
+      "verification_factor": 0.982,
       "volume_factor": 1.15,
       "verified_rows": 133,
-      "total_rows": 133,
+      "total_rows": 137,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
-    "incident_id": "INC-003",
+    "incident_id": "INC-006",
     "risk_level": "Critical",
-    "risk_score": 0.899,
-    "confidence": 0.95,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Source IP 172.16.0.1 is conducting an SSH brute-force attack (labeled SSH-Patator) against destination IP 192.168.10.50 on port 22, triggering the auth_service_flood rule across multiple TCP network flows.",
+    "risk_score": 0.81,
+    "confidence": 0.704,
+    "verified": false,
+    "verified_ratio": 0.926,
+    "theory": "Suspicious activity involving 45.77.21.90: 50 requests from 45.77.21.90 within a 5-minute window, far above the baseline; and activity from unrecognized device 'Unknown-Server'. The agent additionally cites R999999-GHOST, which was never logged; and cites R900018, a row id that looks real but does not exist; and claims row D132 occurred at 1999-01-01T00:00:00; and claims row D145 was a printer_maintenance event.",
+    "rules_fired": [
+      "traffic_spike",
+      "unrecognized_device"
+    ],
+    "mitre": [
+      {
+        "tactic_id": "TA0001",
+        "tactic": "Initial Access",
+        "technique_id": "T1078",
+        "technique": "Valid Accounts"
+      },
+      {
+        "tactic_id": "TA0040",
+        "tactic": "Impact",
+        "technique_id": "T1498",
+        "technique": "Network Denial of Service"
+      }
+    ],
+    "drill_injected": true,
+    "original_confidence": 0.76,
+    "explanation": "Suspicious activity involving 45.77.21.90: 50 requests from 45.77.21.90 within a 5-minute window, far above the baseline; and activity from unrecognized device 'Unknown-Server'. The agent additionally cites R999999-GHOST, which was never logged; and cites R900018, a row id that looks real but does not exist; and claims row D132 occurred at 1999-01-01T00:00:00; and claims row D145 was a printer_maintenance event. This incident is rated Critical (risk score 0.81). The activity involves source(s) 45.77.21.90 and event type(s) network_request. Verified supporting evidence: row D101 (2026-09-01T14:32:10 | 45.77.21.90 | network_request (severity: high)), row D102 (2026-09-01T14:32:11 | 45.77.21.90 | network_request (severity: high)), row D103 (2026-09-01T14:32:12 | 45.77.21.90 | network_request (severity: high)), row D104 (2026-09-01T14:32:13 | 45.77.21.90 | network_request (severity: high)), row D105 (2026-09-01T14:32:14 | 45.77.21.90 | network_request (severity: high)). Warning: 4 cited row(s) failed verification (R999999-GHOST, R900018, D132, D145); their claims were excluded from the risk score.",
+    "explanation_source": "template",
+    "recommended_action": {
+      "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
+      "auto_executed": false,
+      "requires_analyst_approval": true
+    },
+    "evidence": [
+      {
+        "row_id": "D101",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:10",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:10 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D102",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:11",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:11 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D103",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:12",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:12 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D104",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:13",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:13 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D105",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:14",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:14 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D106",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:15",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:15 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D107",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:16",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:16 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D108",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:17",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:17 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D109",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:18",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:18 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D110",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:19",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:19 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D111",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:20",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:20 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D112",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:21",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:21 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D113",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:22",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:22 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D114",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:23",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:23 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D115",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:24",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:24 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D116",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:25",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:25 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D117",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:26",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:26 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D118",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:27",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:27 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D119",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:28",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:28 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D120",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:29",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:29 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D121",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:30",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:30 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D122",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:31",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:31 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D123",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:32",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:32 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D124",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:33",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:33 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D125",
+        "verified": true,
+        "timestamp": "2026-09-01T14:32:34",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:32:34 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D126",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:35",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:35 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D127",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:36",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:36 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D128",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:37",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:37 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D129",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:38",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:38 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D130",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:39",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:39 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D131",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:40",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:40 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D132",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:41",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:41 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D133",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:42",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:42 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D134",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:43",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:43 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D135",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:44",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:44 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D136",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:45",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:45 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D137",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:46",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:46 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D138",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:47",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:47 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D139",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:48",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:48 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D140",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:49",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:49 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D141",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:50",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:50 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D142",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:51",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:51 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D143",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:52",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:52 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D144",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:53",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:53 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D145",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:54",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:54 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D146",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:55",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:55 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D147",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:56",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:56 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D148",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:57",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:57 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D149",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:58",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:58 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D150",
+        "verified": true,
+        "timestamp": "2026-09-01T14:33:59",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:59 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900018",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "D132",
+        "verified": false,
+        "timestamp": "2026-09-01T14:33:41",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:41 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2026-09-01T14:33:41"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "D145",
+        "verified": false,
+        "timestamp": "2026-09-01T14:33:54",
+        "source": "45.77.21.90",
+        "event_type": "network_request",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T14:33:54 | 45.77.21.90 | network_request (severity: high)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "network_request"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      }
+    ],
+    "score_breakdown": {
+      "threat_weight": 0.85,
+      "confidence_factor": 0.867,
+      "verification_factor": 0.956,
+      "volume_factor": 1.15,
+      "verified_rows": 50,
+      "total_rows": 54,
+      "capped_by_verification": false,
+      "unmapped_rules": []
+    },
+    "generated_at": "2026-09-01T09:53:03+00:00"
+  },
+  {
+    "incident_id": "INC-004",
+    "risk_level": "High",
+    "risk_score": 0.796,
+    "confidence": 0.76,
+    "verified": false,
+    "verified_ratio": 0.951,
+    "theory": "Suspicious activity involving 172.16.0.1: 43 connection attempts from 172.16.0.1 into SSH (port 22), a paced credential attack. The agent additionally cites R900003, a row id that looks real but does not exist; and claims row R002842 occurred at 1999-01-01T00:00:00; and claims row R002079 was a printer_maintenance event; and claims row R002785 came from 203.0.113.255.",
     "rules_fired": [
       "auth_service_flood"
     ],
@@ -3197,13 +3401,13 @@
         "technique": "Password Guessing"
       }
     ],
-    "drill_injected": false,
-    "original_confidence": 0.95,
-    "explanation": "Source IP 172.16.0.1 conducted an SSH brute-force attack, labeled SSH-Patator, against destination IP 192.168.10.50 on port 22, triggering the auth_service_flood rule across multiple TCP network flows. This malicious activity is demonstrated by a sample of 8 verified evidence rows out of a total of 77, including rows such as R002248 at 2017-07-04T02:11:00 and R004009 at 2017-07-04T02:16:00. This incident is rated at a Critical risk level with a risk score of 0.899 due to the high-volume authentication flooding directed at the target service.",
-    "explanation_source": "llm",
+    "drill_injected": true,
+    "original_confidence": 0.8,
+    "explanation": "Suspicious activity involving 172.16.0.1: 43 connection attempts from 172.16.0.1 into SSH (port 22), a paced credential attack. The agent additionally cites R900003, a row id that looks real but does not exist; and claims row R002842 occurred at 1999-01-01T00:00:00; and claims row R002079 was a printer_maintenance event; and claims row R002785 came from 203.0.113.255. This incident is rated High (risk score 0.80). The activity involves source(s) 172.16.0.1 and event type(s) network_flow. Verified supporting evidence: row R002248 (2017-07-04T02:11:00 | 172.16.0.1 | network_flow (severity: info)), row R004372 (2017-07-04T02:12:00 | 172.16.0.1 | network_flow (severity: info)), row R000529 (2017-07-04T02:15:00 | 172.16.0.1 | network_flow (severity: info)), row R003287 (2017-07-04T02:15:00 | 172.16.0.1 | network_flow (severity: info)), row R003820 (2017-07-04T02:15:00 | 172.16.0.1 | network_flow (severity: info)). Warning: 4 cited row(s) failed verification (R900003, R002842, R002079, R002785); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
-      "action": "Escalate to the on-call security engineer immediately",
-      "rationale": "Score is in the critical band and needs a human owner now.",
+      "action": "Open a priority ticket and investigate the source within the hour",
+      "rationale": "Score is high enough to warrant same-shift investigation. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
@@ -4208,810 +4412,104 @@
         "mismatches": [],
         "exists": true,
         "claimed": {}
+      },
+      {
+        "row_id": "R900003",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002842",
+        "verified": false,
+        "timestamp": "2017-07-04T02:23:00",
+        "source": "172.16.0.1",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T02:23:00 | 172.16.0.1 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2017-07-04T02:23:00"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "R002079",
+        "verified": false,
+        "timestamp": "2017-07-04T02:36:00",
+        "source": "172.16.0.1",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T02:36:00 | 172.16.0.1 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "network_flow"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "R002785",
+        "verified": false,
+        "timestamp": "2017-07-04T02:48:00",
+        "source": "172.16.0.1",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T02:48:00 | 172.16.0.1 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "172.16.0.1"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
       }
     ],
     "score_breakdown": {
       "threat_weight": 0.8,
-      "confidence_factor": 0.978,
-      "verification_factor": 1.0,
+      "confidence_factor": 0.892,
+      "verification_factor": 0.97,
       "volume_factor": 1.15,
       "verified_rows": 77,
-      "total_rows": 77,
+      "total_rows": 81,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
-    "incident_id": "INC-007",
-    "risk_level": "Critical",
-    "risk_score": 0.898,
-    "confidence": 0.82,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "An attacker using source IP 185.72.44.19 and an unknown laptop successfully logged into the admin account on 10.0.0.10 multiple times during unusual hours between 02:00:03 and 02:07:24 via HTTPS.",
-    "rules_fired": [
-      "off_hours_login",
-      "unrecognized_device"
-    ],
-    "mitre": [
-      {
-        "tactic_id": "TA0001",
-        "tactic": "Initial Access",
-        "technique_id": "T1078",
-        "technique": "Valid Accounts"
-      }
-    ],
-    "drill_injected": false,
-    "original_confidence": 0.82,
-    "explanation": "An attacker using source IP 185.72.44.19 successfully logged into the admin account on 10.0.0.10 multiple times during unusual hours between 02:00:03 and 02:07:24 via HTTPS. This suspicious login activity is captured across the provided sample of verified evidence rows D018 through D025 out of a total of 13 verified evidence rows. This incident is rated at a Critical risk level with a risk score of 0.898 due to repeated unauthorized administrative access attempts from an external source during off-peak hours.",
-    "explanation_source": "llm",
-    "recommended_action": {
-      "action": "Block the source IP and flag the targeted account for review",
-      "rationale": "Repeated authentication failures from one source indicate a guessing attack.",
-      "auto_executed": false,
-      "requires_analyst_approval": true
-    },
-    "evidence": [
-      {
-        "row_id": "D018",
-        "verified": true,
-        "timestamp": "2026-09-01T02:00:03",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:00:03 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D019",
-        "verified": true,
-        "timestamp": "2026-09-01T02:01:06",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:01:06 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D020",
-        "verified": true,
-        "timestamp": "2026-09-01T02:02:09",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:02:09 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D021",
-        "verified": true,
-        "timestamp": "2026-09-01T02:03:12",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:03:12 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D022",
-        "verified": true,
-        "timestamp": "2026-09-01T02:04:15",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:04:15 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D023",
-        "verified": true,
-        "timestamp": "2026-09-01T02:05:18",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:05:18 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D024",
-        "verified": true,
-        "timestamp": "2026-09-01T02:06:21",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:06:21 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D025",
-        "verified": true,
-        "timestamp": "2026-09-01T02:07:24",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:07:24 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D026",
-        "verified": true,
-        "timestamp": "2026-09-01T02:08:27",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:08:27 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D027",
-        "verified": true,
-        "timestamp": "2026-09-01T02:09:30",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:09:30 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D028",
-        "verified": true,
-        "timestamp": "2026-09-01T02:10:33",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:10:33 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D029",
-        "verified": true,
-        "timestamp": "2026-09-01T02:11:36",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:11:36 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D030",
-        "verified": true,
-        "timestamp": "2026-09-01T02:12:39",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:12:39 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      }
-    ],
-    "score_breakdown": {
-      "threat_weight": 0.85,
-      "confidence_factor": 0.919,
-      "verification_factor": 1.0,
-      "volume_factor": 1.15,
-      "verified_rows": 13,
-      "total_rows": 13,
-      "capped_by_verification": false,
-      "unmapped_rules": []
-    },
-    "generated_at": "2026-09-01T09:07:22+00:00"
-  },
-  {
-    "incident_id": "INC-009",
-    "risk_level": "Critical",
-    "risk_score": 0.832,
-    "confidence": 0.67,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 02:43 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'.",
-    "rules_fired": [
-      "off_hours_login",
-      "unrecognized_device"
-    ],
-    "mitre": [
-      {
-        "tactic_id": "TA0001",
-        "tactic": "Initial Access",
-        "technique_id": "T1078",
-        "technique": "Valid Accounts"
-      }
-    ],
-    "drill_injected": false,
-    "original_confidence": 0.67,
-    "explanation": "Suspicious activity was detected involving the IP address 185.72.44.19, characterized by logins occurring outside of normal working hours alongside activity from an unrecognized device named Unknown-Laptop. This behavior is captured across a sample of 8 verified evidence rows out of a total of 17 verified rows, specifically spanning from row D001 through D008 with timestamps starting at 2026-09-01T02:43:12. This incident is rated at a Critical risk level with a risk score of 0.832 due to the high-severity login events originating from an external source during off-hours.",
-    "explanation_source": "llm",
-    "recommended_action": {
-      "action": "Block the source IP and flag the targeted account for review",
-      "rationale": "Repeated authentication failures from one source indicate a guessing attack.",
-      "auto_executed": false,
-      "requires_analyst_approval": true
-    },
-    "evidence": [
-      {
-        "row_id": "D001",
-        "verified": true,
-        "timestamp": "2026-09-01T02:43:12",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:43:12 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D002",
-        "verified": true,
-        "timestamp": "2026-09-01T02:44:15",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:44:15 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D003",
-        "verified": true,
-        "timestamp": "2026-09-01T02:45:18",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:45:18 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D004",
-        "verified": true,
-        "timestamp": "2026-09-01T02:46:21",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:46:21 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D005",
-        "verified": true,
-        "timestamp": "2026-09-01T02:47:24",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:47:24 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D006",
-        "verified": true,
-        "timestamp": "2026-09-01T02:48:27",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:48:27 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D007",
-        "verified": true,
-        "timestamp": "2026-09-01T02:49:30",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:49:30 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D008",
-        "verified": true,
-        "timestamp": "2026-09-01T02:50:33",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:50:33 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D009",
-        "verified": true,
-        "timestamp": "2026-09-01T02:51:36",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:51:36 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D010",
-        "verified": true,
-        "timestamp": "2026-09-01T02:52:39",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:52:39 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D011",
-        "verified": true,
-        "timestamp": "2026-09-01T02:53:42",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:53:42 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D012",
-        "verified": true,
-        "timestamp": "2026-09-01T02:54:45",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:54:45 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D013",
-        "verified": true,
-        "timestamp": "2026-09-01T02:55:48",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:55:48 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D014",
-        "verified": true,
-        "timestamp": "2026-09-01T02:56:51",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:56:51 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D015",
-        "verified": true,
-        "timestamp": "2026-09-01T02:57:54",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:57:54 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D016",
-        "verified": true,
-        "timestamp": "2026-09-01T02:58:57",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:58:57 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D017",
-        "verified": true,
-        "timestamp": "2026-09-01T02:59:00",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T02:59:00 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      }
-    ],
-    "score_breakdown": {
-      "threat_weight": 0.85,
-      "confidence_factor": 0.852,
-      "verification_factor": 1.0,
-      "volume_factor": 1.15,
-      "verified_rows": 17,
-      "total_rows": 17,
-      "capped_by_verification": false,
-      "unmapped_rules": []
-    },
-    "generated_at": "2026-09-01T09:07:22+00:00"
-  },
-  {
-    "incident_id": "INC-010",
-    "risk_level": "Critical",
-    "risk_score": 0.832,
-    "confidence": 0.67,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 03:13 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'.",
-    "rules_fired": [
-      "off_hours_login",
-      "unrecognized_device"
-    ],
-    "mitre": [
-      {
-        "tactic_id": "TA0001",
-        "tactic": "Initial Access",
-        "technique_id": "T1078",
-        "technique": "Valid Accounts"
-      }
-    ],
-    "drill_injected": false,
-    "original_confidence": 0.67,
-    "explanation": "Suspicious activity occurred involving the IP address 185.72.44.19, consisting of multiple high-severity logins performed outside of normal working hours from an unrecognized device named Unknown-Laptop. This behavior is captured across a sample of 8 verified evidence rows out of a total of 20 verified rows, specifically spanning from row D031 to row D038 between the timestamps of 2026-09-01T03:13:42 and 2026-09-01T03:20:03. This incident is rated at a Critical risk level with a risk score of 0.832 due to the anomalous timing and the unrecognized origin of the login sessions.",
-    "explanation_source": "llm",
-    "recommended_action": {
-      "action": "Block the source IP and flag the targeted account for review",
-      "rationale": "Repeated authentication failures from one source indicate a guessing attack.",
-      "auto_executed": false,
-      "requires_analyst_approval": true
-    },
-    "evidence": [
-      {
-        "row_id": "D031",
-        "verified": true,
-        "timestamp": "2026-09-01T03:13:42",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:13:42 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D032",
-        "verified": true,
-        "timestamp": "2026-09-01T03:14:45",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:14:45 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D033",
-        "verified": true,
-        "timestamp": "2026-09-01T03:15:48",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:15:48 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D034",
-        "verified": true,
-        "timestamp": "2026-09-01T03:16:51",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:16:51 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D035",
-        "verified": true,
-        "timestamp": "2026-09-01T03:17:54",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:17:54 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D036",
-        "verified": true,
-        "timestamp": "2026-09-01T03:18:57",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:18:57 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D037",
-        "verified": true,
-        "timestamp": "2026-09-01T03:19:00",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:19:00 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D038",
-        "verified": true,
-        "timestamp": "2026-09-01T03:20:03",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:20:03 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D039",
-        "verified": true,
-        "timestamp": "2026-09-01T03:21:06",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:21:06 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D040",
-        "verified": true,
-        "timestamp": "2026-09-01T03:22:09",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:22:09 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D041",
-        "verified": true,
-        "timestamp": "2026-09-01T03:23:12",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:23:12 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D042",
-        "verified": true,
-        "timestamp": "2026-09-01T03:24:15",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:24:15 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D043",
-        "verified": true,
-        "timestamp": "2026-09-01T03:25:18",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:25:18 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D044",
-        "verified": true,
-        "timestamp": "2026-09-01T03:26:21",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:26:21 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D045",
-        "verified": true,
-        "timestamp": "2026-09-01T03:27:24",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:27:24 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D046",
-        "verified": true,
-        "timestamp": "2026-09-01T03:28:27",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:28:27 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D047",
-        "verified": true,
-        "timestamp": "2026-09-01T03:29:30",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:29:30 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D048",
-        "verified": true,
-        "timestamp": "2026-09-01T03:30:33",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:30:33 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D049",
-        "verified": true,
-        "timestamp": "2026-09-01T03:31:36",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:31:36 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "D050",
-        "verified": true,
-        "timestamp": "2026-09-01T03:32:39",
-        "source": "185.72.44.19",
-        "event_type": "login",
-        "severity": "high",
-        "source_file": "anomaly_logs.csv",
-        "summary": "2026-09-01T03:32:39 | 185.72.44.19 | login (severity: high)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      }
-    ],
-    "score_breakdown": {
-      "threat_weight": 0.85,
-      "confidence_factor": 0.852,
-      "verification_factor": 1.0,
-      "volume_factor": 1.15,
-      "verified_rows": 20,
-      "total_rows": 20,
-      "capped_by_verification": false,
-      "unmapped_rules": []
-    },
-    "generated_at": "2026-09-01T09:07:22+00:00"
-  },
-  {
-    "incident_id": "INC-001",
+    "incident_id": "INC-003",
     "risk_level": "High",
-    "risk_score": 0.786,
-    "confidence": 0.949,
+    "risk_score": 0.753,
+    "confidence": 0.858,
     "verified": false,
-    "verified_ratio": 0.999,
-    "theory": "Source 172.16.0.1 is conducting a DDoS attack against destination 192.168.10.50 on port 80 via TCP, generating multiple unanswered flows and traffic spikes. The agent additionally claims row R999999-GHOST supports this, and that row R000015 occurred at 1999-01-01T00:00:00.",
+    "verified_ratio": 0.998,
+    "theory": "Suspicious activity involving 172.16.0.1: 225 flows from 172.16.0.1 received no reply, the signature of a sweep; and 604 requests from 172.16.0.1 within a 5-minute window, far above the baseline. The agent additionally claims row R000039 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900028, a row id that looks real but does not exist; and claims row R000153 occurred at 1999-01-01T00:00:00.",
     "rules_fired": [
       "traffic_spike",
       "unanswered_flows"
@@ -5031,9 +4529,9 @@
       }
     ],
     "drill_injected": true,
-    "original_confidence": 0.95,
-    "explanation": "Source 172.16.0.1 conducted a distributed denial of service attack against destination 192.168.10.50 on port 80 via TCP, generating multiple unanswered flows and traffic spikes. This activity is shown across 8 verified evidence sample rows out of a total of 1790 verified evidence rows, including row R000015 at timestamp 2017-07-07T03:56:00, alongside rows R000034, R000039, R000080, R000145, R000625, R000647, and R000925. This incident is rated at a High risk level with a risk score of 0.786 due to the volume and potential disruption of the network flow attacks.",
-    "explanation_source": "llm",
+    "original_confidence": 0.86,
+    "explanation": "Suspicious activity involving 172.16.0.1: 225 flows from 172.16.0.1 received no reply, the signature of a sweep; and 604 requests from 172.16.0.1 within a 5-minute window, far above the baseline. The agent additionally claims row R000039 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900028, a row id that looks real but does not exist; and claims row R000153 occurred at 1999-01-01T00:00:00. This incident is rated High (risk score 0.75). The activity involves source(s) 172.16.0.1 and event type(s) network_flow. Verified supporting evidence: row R000015 (2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)), row R000034 (2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)), row R000039 (2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)), row R000080 (2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)), row R000145 (2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)). Warning: 4 cited row(s) failed verification (R000039, R999999-GHOST, R900028, R000153); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
       "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
       "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
@@ -28312,6 +27810,27 @@
         "claimed": {}
       },
       {
+        "row_id": "R000039",
+        "verified": false,
+        "timestamp": "2017-07-07T03:56:00",
+        "source": "172.16.0.1",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "172.16.0.1"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
         "row_id": "R999999-GHOST",
         "verified": false,
         "timestamp": "",
@@ -28325,19 +27844,32 @@
         "claimed": {}
       },
       {
-        "row_id": "R000015",
+        "row_id": "R900028",
         "verified": false,
-        "timestamp": "2017-07-07T03:56:00",
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R000153",
+        "verified": false,
+        "timestamp": "2017-07-07T03:57:00",
         "source": "172.16.0.1",
         "event_type": "network_flow",
         "severity": "info",
         "source_file": "raw_subset.csv",
-        "summary": "2017-07-07T03:56:00 | 172.16.0.1 | network_flow (severity: info)",
+        "summary": "2017-07-07T03:57:00 | 172.16.0.1 | network_flow (severity: info)",
         "mismatches": [
           {
             "field": "timestamp",
             "claimed": "1999-01-01T00:00:00",
-            "actual": "2017-07-07T03:56:00"
+            "actual": "2017-07-07T03:57:00"
           }
         ],
         "exists": true,
@@ -28348,24 +27880,24 @@
     ],
     "score_breakdown": {
       "threat_weight": 0.7,
-      "confidence_factor": 0.977,
+      "confidence_factor": 0.936,
       "verification_factor": 0.999,
       "volume_factor": 1.15,
       "verified_rows": 1790,
-      "total_rows": 1792,
+      "total_rows": 1794,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
-    "incident_id": "INC-006",
+    "incident_id": "INC-002",
     "risk_level": "High",
-    "risk_score": 0.751,
-    "confidence": 0.85,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Source 192.168.10.50 established multiple TCP connections over port 80 to destination 172.16.0.1 across various destination ports, triggering port scan and traffic spike alerts.",
+    "risk_score": 0.734,
+    "confidence": 0.849,
+    "verified": false,
+    "verified_ratio": 0.964,
+    "theory": "Suspicious activity involving 192.168.10.50: 41 distinct destination ports probed by 192.168.10.50 within a 5-minute window; and 41 requests from 192.168.10.50 within a 5-minute window, far above the baseline. The agent additionally claims row R002959 occurred at 1999-01-01T00:00:00; and claims row R000218 was a printer_maintenance event; and claims row R003372 came from 203.0.113.255; and cites R999999-GHOST, which was never logged.",
     "rules_fired": [
       "port_scan",
       "traffic_spike"
@@ -28384,13 +27916,13 @@
         "technique": "Network Denial of Service"
       }
     ],
-    "drill_injected": false,
-    "original_confidence": 0.85,
-    "explanation": "Source 192.168.10.50 established multiple TCP connections over port 80 to destination 172.16.0.1 across various destination ports, triggering port scan and traffic spike alerts. This incident is rated High (risk score 0.75). The activity involves source(s) 192.168.10.50 and event type(s) network_flow. Verified supporting evidence: row R000644 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R002959 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R003255 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R004303 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R000427 (2017-07-07T03:58:00 | 192.168.10.50 | network_flow (severity: info)).",
-    "explanation_source": "template_llm_budget",
+    "drill_injected": true,
+    "original_confidence": 0.88,
+    "explanation": "Suspicious activity involving 192.168.10.50: 41 distinct destination ports probed by 192.168.10.50 within a 5-minute window; and 41 requests from 192.168.10.50 within a 5-minute window, far above the baseline. The agent additionally claims row R002959 occurred at 1999-01-01T00:00:00; and claims row R000218 was a printer_maintenance event; and claims row R003372 came from 203.0.113.255; and cites R999999-GHOST, which was never logged. This incident is rated High (risk score 0.73). The activity involves source(s) 192.168.10.50 and event type(s) network_flow. Verified supporting evidence: row R000644 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R002959 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R003255 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R004303 (2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)), row R000427 (2017-07-07T03:58:00 | 192.168.10.50 | network_flow (severity: info)). Warning: 4 cited row(s) failed verification (R002959, R000218, R003372, R999999-GHOST); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
       "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
@@ -29798,426 +29330,1098 @@
         "mismatches": [],
         "exists": true,
         "claimed": {}
+      },
+      {
+        "row_id": "R002959",
+        "verified": false,
+        "timestamp": "2017-07-07T03:57:00",
+        "source": "192.168.10.50",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-07T03:57:00 | 192.168.10.50 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2017-07-07T03:57:00"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "R000218",
+        "verified": false,
+        "timestamp": "2017-07-07T04:00:00",
+        "source": "192.168.10.50",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-07T04:00:00 | 192.168.10.50 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "network_flow"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "R003372",
+        "verified": false,
+        "timestamp": "2017-07-07T04:02:00",
+        "source": "192.168.10.50",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-07T04:02:00 | 192.168.10.50 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "192.168.10.50"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
       }
     ],
     "score_breakdown": {
       "threat_weight": 0.7,
-      "confidence_factor": 0.933,
-      "verification_factor": 1.0,
+      "confidence_factor": 0.932,
+      "verification_factor": 0.979,
       "volume_factor": 1.15,
       "verified_rows": 108,
-      "total_rows": 108,
+      "total_rows": 112,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
-    "incident_id": "INC-008",
+    "incident_id": "INC-010",
     "risk_level": "High",
-    "risk_score": 0.728,
-    "confidence": 0.8,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "External IP 209.85.144.154 initiated a TCP network flow to internal host 192.168.10.9 on PostgreSQL port 5432.",
+    "risk_score": 0.705,
+    "confidence": 0.558,
+    "verified": false,
+    "verified_ratio": 0.833,
+    "theory": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 03:13 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'. The agent additionally claims row D040 was a printer_maintenance event; and claims row D033 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900048, a row id that looks real but does not exist.",
     "rules_fired": [
-      "external_to_high_risk_port"
+      "off_hours_login",
+      "unrecognized_device"
     ],
     "mitre": [
       {
         "tactic_id": "TA0001",
         "tactic": "Initial Access",
-        "technique_id": "T1133",
-        "technique": "External Remote Services"
+        "technique_id": "T1078",
+        "technique": "Valid Accounts"
       }
     ],
-    "drill_injected": false,
-    "original_confidence": 0.8,
-    "explanation": "External IP 209.85.144.154 initiated a TCP network flow to internal host 192.168.10.9 on PostgreSQL port 5432. This incident is rated High (risk score 0.73). The activity involves source(s) 209.85.144.154 and event type(s) network_flow. Verified supporting evidence: row R002082 (2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)).",
-    "explanation_source": "template_llm_budget",
+    "drill_injected": true,
+    "original_confidence": 0.67,
+    "explanation": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 03:13 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'. The agent additionally claims row D040 was a printer_maintenance event; and claims row D033 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900048, a row id that looks real but does not exist. This incident is rated High (risk score 0.70). The activity involves source(s) 185.72.44.19 and event type(s) login. Verified supporting evidence: row D031 (2026-09-01T03:13:42 | 185.72.44.19 | login (severity: high)), row D032 (2026-09-01T03:14:45 | 185.72.44.19 | login (severity: high)), row D033 (2026-09-01T03:15:48 | 185.72.44.19 | login (severity: high)), row D034 (2026-09-01T03:16:51 | 185.72.44.19 | login (severity: high)), row D035 (2026-09-01T03:17:54 | 185.72.44.19 | login (severity: high)). Warning: 4 cited row(s) failed verification (D040, D033, R999999-GHOST, R900048); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
-      "action": "Open a priority ticket and investigate the source within the hour",
-      "rationale": "Score is high enough to warrant same-shift investigation.",
+      "action": "Block the source IP and flag the targeted account for review",
+      "rationale": "Repeated authentication failures from one source indicate a guessing attack. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
     "evidence": [
       {
-        "row_id": "R002082",
+        "row_id": "D031",
         "verified": true,
-        "timestamp": "2017-07-04T01:11:00",
-        "source": "209.85.144.154",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T03:13:42",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:13:42 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D032",
+        "verified": true,
+        "timestamp": "2026-09-01T03:14:45",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:14:45 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D033",
+        "verified": true,
+        "timestamp": "2026-09-01T03:15:48",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:15:48 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D034",
+        "verified": true,
+        "timestamp": "2026-09-01T03:16:51",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:16:51 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D035",
+        "verified": true,
+        "timestamp": "2026-09-01T03:17:54",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:17:54 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D036",
+        "verified": true,
+        "timestamp": "2026-09-01T03:18:57",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:18:57 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D037",
+        "verified": true,
+        "timestamp": "2026-09-01T03:19:00",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:19:00 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D038",
+        "verified": true,
+        "timestamp": "2026-09-01T03:20:03",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:20:03 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D039",
+        "verified": true,
+        "timestamp": "2026-09-01T03:21:06",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:21:06 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D040",
+        "verified": true,
+        "timestamp": "2026-09-01T03:22:09",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:22:09 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D041",
+        "verified": true,
+        "timestamp": "2026-09-01T03:23:12",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:23:12 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D042",
+        "verified": true,
+        "timestamp": "2026-09-01T03:24:15",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:24:15 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D043",
+        "verified": true,
+        "timestamp": "2026-09-01T03:25:18",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:25:18 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D044",
+        "verified": true,
+        "timestamp": "2026-09-01T03:26:21",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:26:21 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D045",
+        "verified": true,
+        "timestamp": "2026-09-01T03:27:24",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:27:24 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D046",
+        "verified": true,
+        "timestamp": "2026-09-01T03:28:27",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:28:27 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D047",
+        "verified": true,
+        "timestamp": "2026-09-01T03:29:30",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:29:30 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D048",
+        "verified": true,
+        "timestamp": "2026-09-01T03:30:33",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:30:33 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D049",
+        "verified": true,
+        "timestamp": "2026-09-01T03:31:36",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:31:36 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D050",
+        "verified": true,
+        "timestamp": "2026-09-01T03:32:39",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:32:39 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D040",
+        "verified": false,
+        "timestamp": "2026-09-01T03:22:09",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:22:09 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "login"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "D033",
+        "verified": false,
+        "timestamp": "2026-09-01T03:15:48",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T03:15:48 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "185.72.44.19"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900048",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
         "claimed": {}
       }
     ],
     "score_breakdown": {
-      "threat_weight": 0.8,
-      "confidence_factor": 0.91,
-      "verification_factor": 1.0,
-      "volume_factor": 1.0,
-      "verified_rows": 1,
-      "total_rows": 1,
+      "threat_weight": 0.85,
+      "confidence_factor": 0.801,
+      "verification_factor": 0.9,
+      "volume_factor": 1.15,
+      "verified_rows": 20,
+      "total_rows": 24,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
-    "incident_id": "INC-011",
+    "incident_id": "INC-008",
     "risk_level": "High",
-    "risk_score": 0.613,
-    "confidence": 0.6,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Suspicious activity involving 192.168.10.9: 23 requests from 192.168.10.9 within a 5-minute window, far above the baseline.",
+    "risk_score": 0.687,
+    "confidence": 0.542,
+    "verified": false,
+    "verified_ratio": 0.81,
+    "theory": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 02:43 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'. The agent additionally claims row D008 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900033, a row id that looks real but does not exist; and claims row D009 occurred at 1999-01-01T00:00:00.",
     "rules_fired": [
-      "traffic_spike"
+      "off_hours_login",
+      "unrecognized_device"
     ],
     "mitre": [
       {
-        "tactic_id": "TA0040",
-        "tactic": "Impact",
-        "technique_id": "T1498",
-        "technique": "Network Denial of Service"
+        "tactic_id": "TA0001",
+        "tactic": "Initial Access",
+        "technique_id": "T1078",
+        "technique": "Valid Accounts"
       }
     ],
-    "drill_injected": false,
-    "original_confidence": 0.6,
-    "explanation": "Suspicious activity involving 192.168.10.9: 23 requests from 192.168.10.9 within a 5-minute window, far above the baseline. This incident is rated High (risk score 0.61). The activity involves source(s) 192.168.10.9 and event type(s) network_flow. Verified supporting evidence: row R000575 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R001080 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R002909 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R003815 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R000122 (2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)).",
-    "explanation_source": "template_llm_budget",
+    "drill_injected": true,
+    "original_confidence": 0.67,
+    "explanation": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 02:43 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'. The agent additionally claims row D008 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900033, a row id that looks real but does not exist; and claims row D009 occurred at 1999-01-01T00:00:00. This incident is rated High (risk score 0.69). The activity involves source(s) 185.72.44.19 and event type(s) login. Verified supporting evidence: row D001 (2026-09-01T02:43:12 | 185.72.44.19 | login (severity: high)), row D002 (2026-09-01T02:44:15 | 185.72.44.19 | login (severity: high)), row D003 (2026-09-01T02:45:18 | 185.72.44.19 | login (severity: high)), row D004 (2026-09-01T02:46:21 | 185.72.44.19 | login (severity: high)), row D005 (2026-09-01T02:47:24 | 185.72.44.19 | login (severity: high)). Warning: 4 cited row(s) failed verification (D008, R999999-GHOST, R900033, D009); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
-      "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
+      "action": "Block the source IP and flag the targeted account for review",
+      "rationale": "Repeated authentication failures from one source indicate a guessing attack. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
     "evidence": [
       {
-        "row_id": "R000575",
+        "row_id": "D001",
         "verified": true,
-        "timestamp": "2017-07-04T04:25:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:43:12",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:43:12 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R001080",
+        "row_id": "D002",
         "verified": true,
-        "timestamp": "2017-07-04T04:25:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:44:15",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:44:15 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R002909",
+        "row_id": "D003",
         "verified": true,
-        "timestamp": "2017-07-04T04:25:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:45:18",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:45:18 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R003815",
+        "row_id": "D004",
         "verified": true,
-        "timestamp": "2017-07-04T04:25:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:46:21",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:46:21 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R000122",
+        "row_id": "D005",
         "verified": true,
-        "timestamp": "2017-07-04T04:26:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:47:24",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:47:24 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R000420",
+        "row_id": "D006",
         "verified": true,
-        "timestamp": "2017-07-04T04:26:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:48:27",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:48:27 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R003836",
+        "row_id": "D007",
         "verified": true,
-        "timestamp": "2017-07-04T04:26:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:49:30",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:49:30 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R000043",
+        "row_id": "D008",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:50:33",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:50:33 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R001456",
+        "row_id": "D009",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:51:36",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:51:36 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R002957",
+        "row_id": "D010",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:52:39",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:52:39 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R003229",
+        "row_id": "D011",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:53:42",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:53:42 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R003299",
+        "row_id": "D012",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:54:45",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:54:45 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R004104",
+        "row_id": "D013",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:55:48",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:55:48 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R004528",
+        "row_id": "D014",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:56:51",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:56:51 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R004712",
+        "row_id": "D015",
         "verified": true,
-        "timestamp": "2017-07-04T04:27:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:57:54",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:57:54 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R000087",
+        "row_id": "D016",
         "verified": true,
-        "timestamp": "2017-07-04T04:28:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:58:57",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:58:57 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R001245",
+        "row_id": "D017",
         "verified": true,
-        "timestamp": "2017-07-04T04:28:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "timestamp": "2026-09-01T02:59:00",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:59:00 | 185.72.44.19 | login (severity: high)",
         "mismatches": [],
         "exists": true,
         "claimed": {}
       },
       {
-        "row_id": "R001659",
-        "verified": true,
-        "timestamp": "2017-07-04T04:28:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
-        "mismatches": [],
+        "row_id": "D008",
+        "verified": false,
+        "timestamp": "2026-09-01T02:50:33",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:50:33 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "185.72.44.19"
+          }
+        ],
         "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
         "claimed": {}
       },
       {
-        "row_id": "R002244",
-        "verified": true,
-        "timestamp": "2017-07-04T04:28:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "row_id": "R900033",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
         "mismatches": [],
-        "exists": true,
+        "exists": false,
         "claimed": {}
       },
       {
-        "row_id": "R002377",
-        "verified": true,
-        "timestamp": "2017-07-04T04:28:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
-        "mismatches": [],
+        "row_id": "D009",
+        "verified": false,
+        "timestamp": "2026-09-01T02:51:36",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:51:36 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2026-09-01T02:51:36"
+          }
+        ],
         "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "R003388",
-        "verified": true,
-        "timestamp": "2017-07-04T04:28:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "R002382",
-        "verified": true,
-        "timestamp": "2017-07-04T04:29:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:29:00 | 192.168.10.9 | network_flow (severity: info)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
-      },
-      {
-        "row_id": "R002678",
-        "verified": true,
-        "timestamp": "2017-07-04T04:29:00",
-        "source": "192.168.10.9",
-        "event_type": "network_flow",
-        "severity": "info",
-        "source_file": "raw_subset.csv",
-        "summary": "2017-07-04T04:29:00 | 192.168.10.9 | network_flow (severity: info)",
-        "mismatches": [],
-        "exists": true,
-        "claimed": {}
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
       }
     ],
     "score_breakdown": {
-      "threat_weight": 0.65,
-      "confidence_factor": 0.82,
-      "verification_factor": 1.0,
+      "threat_weight": 0.85,
+      "confidence_factor": 0.794,
+      "verification_factor": 0.886,
       "volume_factor": 1.15,
-      "verified_rows": 23,
-      "total_rows": 23,
+      "verified_rows": 17,
+      "total_rows": 21,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
+  },
+  {
+    "incident_id": "INC-009",
+    "risk_level": "High",
+    "risk_score": 0.655,
+    "confidence": 0.512,
+    "verified": false,
+    "verified_ratio": 0.765,
+    "theory": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 02:00 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'. The agent additionally cites R900008, a row id that looks real but does not exist; and claims row D025 occurred at 1999-01-01T00:00:00; and claims row D024 was a printer_maintenance event; and claims row D023 came from 203.0.113.255.",
+    "rules_fired": [
+      "off_hours_login",
+      "unrecognized_device"
+    ],
+    "mitre": [
+      {
+        "tactic_id": "TA0001",
+        "tactic": "Initial Access",
+        "technique_id": "T1078",
+        "technique": "Valid Accounts"
+      }
+    ],
+    "drill_injected": true,
+    "original_confidence": 0.67,
+    "explanation": "Suspicious activity involving 185.72.44.19: login by 185.72.44.19 at 02:00 on 2026-09-01, outside normal working hours; and activity from unrecognized device 'Unknown-Laptop'. The agent additionally cites R900008, a row id that looks real but does not exist; and claims row D025 occurred at 1999-01-01T00:00:00; and claims row D024 was a printer_maintenance event; and claims row D023 came from 203.0.113.255. This incident is rated High (risk score 0.66). The activity involves source(s) 185.72.44.19 and event type(s) login. Verified supporting evidence: row D018 (2026-09-01T02:00:03 | 185.72.44.19 | login (severity: high)), row D019 (2026-09-01T02:01:06 | 185.72.44.19 | login (severity: high)), row D020 (2026-09-01T02:02:09 | 185.72.44.19 | login (severity: high)), row D021 (2026-09-01T02:03:12 | 185.72.44.19 | login (severity: high)), row D022 (2026-09-01T02:04:15 | 185.72.44.19 | login (severity: high)). Warning: 4 cited row(s) failed verification (R900008, D025, D024, D023); their claims were excluded from the risk score.",
+    "explanation_source": "template",
+    "recommended_action": {
+      "action": "Block the source IP and flag the targeted account for review",
+      "rationale": "Repeated authentication failures from one source indicate a guessing attack. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
+      "auto_executed": false,
+      "requires_analyst_approval": true
+    },
+    "evidence": [
+      {
+        "row_id": "D018",
+        "verified": true,
+        "timestamp": "2026-09-01T02:00:03",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:00:03 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D019",
+        "verified": true,
+        "timestamp": "2026-09-01T02:01:06",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:01:06 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D020",
+        "verified": true,
+        "timestamp": "2026-09-01T02:02:09",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:02:09 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D021",
+        "verified": true,
+        "timestamp": "2026-09-01T02:03:12",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:03:12 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D022",
+        "verified": true,
+        "timestamp": "2026-09-01T02:04:15",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:04:15 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D023",
+        "verified": true,
+        "timestamp": "2026-09-01T02:05:18",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:05:18 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D024",
+        "verified": true,
+        "timestamp": "2026-09-01T02:06:21",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:06:21 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D025",
+        "verified": true,
+        "timestamp": "2026-09-01T02:07:24",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:07:24 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D026",
+        "verified": true,
+        "timestamp": "2026-09-01T02:08:27",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:08:27 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D027",
+        "verified": true,
+        "timestamp": "2026-09-01T02:09:30",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:09:30 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D028",
+        "verified": true,
+        "timestamp": "2026-09-01T02:10:33",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:10:33 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D029",
+        "verified": true,
+        "timestamp": "2026-09-01T02:11:36",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:11:36 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "D030",
+        "verified": true,
+        "timestamp": "2026-09-01T02:12:39",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:12:39 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900008",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "D025",
+        "verified": false,
+        "timestamp": "2026-09-01T02:07:24",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:07:24 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2026-09-01T02:07:24"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "D024",
+        "verified": false,
+        "timestamp": "2026-09-01T02:06:21",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:06:21 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "login"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "D023",
+        "verified": false,
+        "timestamp": "2026-09-01T02:05:18",
+        "source": "185.72.44.19",
+        "event_type": "login",
+        "severity": "high",
+        "source_file": "anomaly_logs.csv",
+        "summary": "2026-09-01T02:05:18 | 185.72.44.19 | login (severity: high)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "185.72.44.19"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      }
+    ],
+    "score_breakdown": {
+      "threat_weight": 0.85,
+      "confidence_factor": 0.78,
+      "verification_factor": 0.859,
+      "volume_factor": 1.15,
+      "verified_rows": 13,
+      "total_rows": 17,
+      "capped_by_verification": false,
+      "unmapped_rules": []
+    },
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
     "incident_id": "INC-012",
-    "risk_level": "High",
-    "risk_score": 0.613,
-    "confidence": 0.6,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Suspicious activity involving 192.168.10.8: 26 requests from 192.168.10.8 within a 5-minute window, far above the baseline.",
+    "risk_level": "Medium",
+    "risk_score": 0.555,
+    "confidence": 0.538,
+    "verified": false,
+    "verified_ratio": 0.897,
+    "theory": "Suspicious activity involving 192.168.10.8: 26 requests from 192.168.10.8 within a 5-minute window, far above the baseline. The agent additionally claims row R003123 occurred at 1999-01-01T00:00:00; and claims row R002996 was a printer_maintenance event; and claims row R003123 came from 203.0.113.255.",
     "rules_fired": [
       "traffic_spike"
     ],
@@ -30229,13 +30433,13 @@
         "technique": "Network Denial of Service"
       }
     ],
-    "drill_injected": false,
+    "drill_injected": true,
     "original_confidence": 0.6,
-    "explanation": "Suspicious activity involving 192.168.10.8: 26 requests from 192.168.10.8 within a 5-minute window, far above the baseline. This incident is rated High (risk score 0.61). The activity involves source(s) 192.168.10.8 and event type(s) network_flow. Verified supporting evidence: row R001106 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R001210 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R001254 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R002412 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R002770 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)).",
-    "explanation_source": "template_llm_budget",
+    "explanation": "Suspicious activity involving 192.168.10.8: 26 requests from 192.168.10.8 within a 5-minute window, far above the baseline. The agent additionally claims row R003123 occurred at 1999-01-01T00:00:00; and claims row R002996 was a printer_maintenance event; and claims row R003123 came from 203.0.113.255. This incident is rated Medium (risk score 0.56). The activity involves source(s) 192.168.10.8 and event type(s) network_flow. Verified supporting evidence: row R001106 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R001210 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R001254 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R002412 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)), row R002770 (2017-07-05T02:30:00 | 192.168.10.8 | network_flow (severity: info)). Warning: 3 cited row(s) failed verification (R003123, R002996, R003123); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
       "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
@@ -30577,28 +30781,91 @@
         "mismatches": [],
         "exists": true,
         "claimed": {}
+      },
+      {
+        "row_id": "R003123",
+        "verified": false,
+        "timestamp": "2017-07-05T02:31:00",
+        "source": "192.168.10.8",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-05T02:31:00 | 192.168.10.8 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2017-07-05T02:31:00"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "R002996",
+        "verified": false,
+        "timestamp": "2017-07-05T02:35:00",
+        "source": "192.168.10.8",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-05T02:35:00 | 192.168.10.8 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "network_flow"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "R003123",
+        "verified": false,
+        "timestamp": "2017-07-05T02:31:00",
+        "source": "192.168.10.8",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-05T02:31:00 | 192.168.10.8 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "192.168.10.8"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
       }
     ],
     "score_breakdown": {
       "threat_weight": 0.65,
-      "confidence_factor": 0.82,
-      "verification_factor": 1.0,
+      "confidence_factor": 0.792,
+      "verification_factor": 0.938,
       "volume_factor": 1.15,
       "verified_rows": 26,
-      "total_rows": 26,
+      "total_rows": 29,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
   },
   {
     "incident_id": "INC-013",
-    "risk_level": "High",
-    "risk_score": 0.613,
-    "confidence": 0.6,
-    "verified": true,
-    "verified_ratio": 1.0,
-    "theory": "Suspicious activity involving 192.168.10.5: 20 requests from 192.168.10.5 within a 5-minute window, far above the baseline.",
+    "risk_level": "Medium",
+    "risk_score": 0.544,
+    "confidence": 0.525,
+    "verified": false,
+    "verified_ratio": 0.875,
+    "theory": "Suspicious activity involving 192.168.10.5: 20 requests from 192.168.10.5 within a 5-minute window, far above the baseline. The agent additionally claims row R002408 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900038, a row id that looks real but does not exist.",
     "rules_fired": [
       "traffic_spike"
     ],
@@ -30610,13 +30877,13 @@
         "technique": "Network Denial of Service"
       }
     ],
-    "drill_injected": false,
+    "drill_injected": true,
     "original_confidence": 0.6,
-    "explanation": "Suspicious activity involving 192.168.10.5: 20 requests from 192.168.10.5 within a 5-minute window, far above the baseline. This incident is rated High (risk score 0.61). The activity involves source(s) 192.168.10.5 and event type(s) network_flow. Verified supporting evidence: row R003925 (2017-07-05T03:13:00 | 192.168.10.5 | network_flow (severity: info)), row R000601 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)), row R001187 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)), row R001389 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)), row R001968 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)).",
-    "explanation_source": "template_llm_budget",
+    "explanation": "Suspicious activity involving 192.168.10.5: 20 requests from 192.168.10.5 within a 5-minute window, far above the baseline. The agent additionally claims row R002408 came from 203.0.113.255; and cites R999999-GHOST, which was never logged; and cites R900038, a row id that looks real but does not exist. This incident is rated Medium (risk score 0.54). The activity involves source(s) 192.168.10.5 and event type(s) network_flow. Verified supporting evidence: row R003925 (2017-07-05T03:13:00 | 192.168.10.5 | network_flow (severity: info)), row R000601 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)), row R001187 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)), row R001389 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)), row R001968 (2017-07-05T03:14:00 | 192.168.10.5 | network_flow (severity: info)). Warning: 3 cited row(s) failed verification (R002408, R999999-GHOST, R900038); their claims were excluded from the risk score.",
+    "explanation_source": "template",
     "recommended_action": {
       "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
-      "rationale": "Request volume from this source is far above the normal baseline.",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
       "auto_executed": false,
       "requires_analyst_approval": true
     },
@@ -30893,18 +31160,601 @@
         "mismatches": [],
         "exists": true,
         "claimed": {}
+      },
+      {
+        "row_id": "R002408",
+        "verified": false,
+        "timestamp": "2017-07-05T03:17:00",
+        "source": "192.168.10.5",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-05T03:17:00 | 192.168.10.5 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "192.168.10.5"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900038",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
       }
     ],
     "score_breakdown": {
       "threat_weight": 0.65,
-      "confidence_factor": 0.82,
-      "verification_factor": 1.0,
+      "confidence_factor": 0.786,
+      "verification_factor": 0.925,
       "volume_factor": 1.15,
       "verified_rows": 21,
-      "total_rows": 21,
+      "total_rows": 24,
       "capped_by_verification": false,
       "unmapped_rules": []
     },
-    "generated_at": "2026-09-01T09:07:22+00:00"
+    "generated_at": "2026-09-01T09:53:03+00:00"
+  },
+  {
+    "incident_id": "INC-011",
+    "risk_level": "Medium",
+    "risk_score": 0.531,
+    "confidence": 0.511,
+    "verified": false,
+    "verified_ratio": 0.852,
+    "theory": "Suspicious activity involving 192.168.10.9: 23 requests from 192.168.10.9 within a 5-minute window, far above the baseline. The agent additionally cites R999999-GHOST, which was never logged; and cites R900023, a row id that looks real but does not exist; and claims row R003299 occurred at 1999-01-01T00:00:00; and claims row R900023 was a printer_maintenance event.",
+    "rules_fired": [
+      "traffic_spike"
+    ],
+    "mitre": [
+      {
+        "tactic_id": "TA0040",
+        "tactic": "Impact",
+        "technique_id": "T1498",
+        "technique": "Network Denial of Service"
+      }
+    ],
+    "drill_injected": true,
+    "original_confidence": 0.6,
+    "explanation": "Suspicious activity involving 192.168.10.9: 23 requests from 192.168.10.9 within a 5-minute window, far above the baseline. The agent additionally cites R999999-GHOST, which was never logged; and cites R900023, a row id that looks real but does not exist; and claims row R003299 occurred at 1999-01-01T00:00:00; and claims row R900023 was a printer_maintenance event. This incident is rated Medium (risk score 0.53). The activity involves source(s) 192.168.10.9 and event type(s) network_flow. Verified supporting evidence: row R000575 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R001080 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R002909 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R003815 (2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)), row R000122 (2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)). Warning: 4 cited row(s) failed verification (R999999-GHOST, R900023, R003299, R900023); their claims were excluded from the risk score.",
+    "explanation_source": "template",
+    "recommended_action": {
+      "action": "Rate-limit or block the source IP at the perimeter and monitor service health",
+      "rationale": "Request volume from this source is far above the normal baseline. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
+      "auto_executed": false,
+      "requires_analyst_approval": true
+    },
+    "evidence": [
+      {
+        "row_id": "R000575",
+        "verified": true,
+        "timestamp": "2017-07-04T04:25:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R001080",
+        "verified": true,
+        "timestamp": "2017-07-04T04:25:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002909",
+        "verified": true,
+        "timestamp": "2017-07-04T04:25:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R003815",
+        "verified": true,
+        "timestamp": "2017-07-04T04:25:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:25:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R000122",
+        "verified": true,
+        "timestamp": "2017-07-04T04:26:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R000420",
+        "verified": true,
+        "timestamp": "2017-07-04T04:26:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R003836",
+        "verified": true,
+        "timestamp": "2017-07-04T04:26:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:26:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R000043",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R001456",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002957",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R003229",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R003299",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R004104",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R004528",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R004712",
+        "verified": true,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R000087",
+        "verified": true,
+        "timestamp": "2017-07-04T04:28:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R001245",
+        "verified": true,
+        "timestamp": "2017-07-04T04:28:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R001659",
+        "verified": true,
+        "timestamp": "2017-07-04T04:28:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002244",
+        "verified": true,
+        "timestamp": "2017-07-04T04:28:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002377",
+        "verified": true,
+        "timestamp": "2017-07-04T04:28:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R003388",
+        "verified": true,
+        "timestamp": "2017-07-04T04:28:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:28:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002382",
+        "verified": true,
+        "timestamp": "2017-07-04T04:29:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:29:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002678",
+        "verified": true,
+        "timestamp": "2017-07-04T04:29:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:29:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R900023",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      },
+      {
+        "row_id": "R003299",
+        "verified": false,
+        "timestamp": "2017-07-04T04:27:00",
+        "source": "192.168.10.9",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T04:27:00 | 192.168.10.9 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2017-07-04T04:27:00"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "R900023",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      }
+    ],
+    "score_breakdown": {
+      "threat_weight": 0.65,
+      "confidence_factor": 0.78,
+      "verification_factor": 0.911,
+      "volume_factor": 1.15,
+      "verified_rows": 23,
+      "total_rows": 27,
+      "capped_by_verification": false,
+      "unmapped_rules": []
+    },
+    "generated_at": "2026-09-01T09:53:03+00:00"
+  },
+  {
+    "incident_id": "INC-007",
+    "risk_level": "Low",
+    "risk_score": 0.257,
+    "confidence": 0.15,
+    "verified": false,
+    "verified_ratio": 0.2,
+    "theory": "Suspicious activity involving 209.85.144.154: an external host 209.85.144.154 connected to port 5432 (PostgreSQL), which should not be exposed. The agent additionally claims row R002082 occurred at 1999-01-01T00:00:00; and claims row R002082 was a printer_maintenance event; and claims row R002082 came from 203.0.113.255; and cites R999999-GHOST, which was never logged.",
+    "rules_fired": [
+      "external_to_high_risk_port"
+    ],
+    "mitre": [
+      {
+        "tactic_id": "TA0001",
+        "tactic": "Initial Access",
+        "technique_id": "T1133",
+        "technique": "External Remote Services"
+      }
+    ],
+    "drill_injected": true,
+    "original_confidence": 0.75,
+    "explanation": "Suspicious activity involving 209.85.144.154: an external host 209.85.144.154 connected to port 5432 (PostgreSQL), which should not be exposed. The agent additionally claims row R002082 occurred at 1999-01-01T00:00:00; and claims row R002082 was a printer_maintenance event; and claims row R002082 came from 203.0.113.255; and cites R999999-GHOST, which was never logged. This incident is rated Low (risk score 0.26). The activity involves source(s) 209.85.144.154 and event type(s) network_flow. Verified supporting evidence: row R002082 (2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)). Warning: 4 cited row(s) failed verification (R002082, R002082, R002082, R999999-GHOST); their claims were excluded from the risk score.",
+    "explanation_source": "template",
+    "recommended_action": {
+      "action": "Log for trend analysis; no immediate action required",
+      "rationale": "Signal is weak and consistent with routine noise. Some cited evidence could not be verified against the raw logs, so confirm the evidence before acting.",
+      "auto_executed": false,
+      "requires_analyst_approval": true
+    },
+    "evidence": [
+      {
+        "row_id": "R002082",
+        "verified": true,
+        "timestamp": "2017-07-04T01:11:00",
+        "source": "209.85.144.154",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)",
+        "mismatches": [],
+        "exists": true,
+        "claimed": {}
+      },
+      {
+        "row_id": "R002082",
+        "verified": false,
+        "timestamp": "2017-07-04T01:11:00",
+        "source": "209.85.144.154",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "timestamp",
+            "claimed": "1999-01-01T00:00:00",
+            "actual": "2017-07-04T01:11:00"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "timestamp": "1999-01-01T00:00:00"
+        }
+      },
+      {
+        "row_id": "R002082",
+        "verified": false,
+        "timestamp": "2017-07-04T01:11:00",
+        "source": "209.85.144.154",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "event_type",
+            "claimed": "printer_maintenance",
+            "actual": "network_flow"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "event_type": "printer_maintenance"
+        }
+      },
+      {
+        "row_id": "R002082",
+        "verified": false,
+        "timestamp": "2017-07-04T01:11:00",
+        "source": "209.85.144.154",
+        "event_type": "network_flow",
+        "severity": "info",
+        "source_file": "raw_subset.csv",
+        "summary": "2017-07-04T01:11:00 | 209.85.144.154 | network_flow (severity: info)",
+        "mismatches": [
+          {
+            "field": "source",
+            "claimed": "203.0.113.255",
+            "actual": "209.85.144.154"
+          }
+        ],
+        "exists": true,
+        "claimed": {
+          "source": "203.0.113.255"
+        }
+      },
+      {
+        "row_id": "R999999-GHOST",
+        "verified": false,
+        "timestamp": "",
+        "source": "",
+        "event_type": "",
+        "severity": "",
+        "source_file": "",
+        "summary": "row not found in normalized_logs.csv",
+        "mismatches": [],
+        "exists": false,
+        "claimed": {}
+      }
+    ],
+    "score_breakdown": {
+      "threat_weight": 0.8,
+      "confidence_factor": 0.618,
+      "verification_factor": 0.52,
+      "volume_factor": 1.0,
+      "verified_rows": 1,
+      "total_rows": 5,
+      "capped_by_verification": false,
+      "unmapped_rules": []
+    },
+    "generated_at": "2026-09-01T09:53:03+00:00"
   }
 ]
