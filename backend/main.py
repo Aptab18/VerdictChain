@@ -60,14 +60,16 @@ def startup():
 # ── endpoints ──────────────────────────────────────────────────────────────── #
 
 @app.post("/run-investigation")
-def run_investigation(use_llm: bool = False, drill: bool = False):
+def run_investigation(use_llm: bool = False, drill: bool = False,
+                      drill_lies: int = 2):
     """Run the full 3-agent pipeline.
 
     drill=True injects false citations before verification so the Verification
     Layer can be seen catching them. See agents/redteam_drill.py.
     """
     global _findings, _findings_mtime
-    state = run_pipeline(str(DEFAULT_LOG), use_llm=use_llm, drill=drill)
+    state = run_pipeline(str(DEFAULT_LOG), use_llm=use_llm, drill=drill,
+                         drill_lies=drill_lies)
     _findings = state.get("findings", [])
     FINDINGS_PATH.write_text(json.dumps(_findings, indent=2, default=str), encoding="utf-8")
     _findings_mtime = FINDINGS_PATH.stat().st_mtime

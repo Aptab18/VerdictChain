@@ -45,6 +45,6 @@
   "consolidation": {
     "log_rows_examined": 5400,
     "evidence_rows_cited": 2330,
-    "incidents_raised": 12
+    "incidents_raised": 13
   }
 }

@@ -59,7 +59,7 @@ def node_drill(state: PipelineState) -> PipelineState:
     try:
         from agents.redteam_drill import inject_hallucination
         state["incidents"], state["drill_info"] = inject_hallucination(
-            state.get("incidents", []))
+            state.get("incidents", []), lies=state.get("drill_lies", 2))
     except Exception as e:
         state["drill_info"] = {"injected": False, "reason": str(e)}
         state.setdefault("errors", []).append(f"RedTeamDrill: {e}")
@@ -120,9 +120,10 @@ def _run_langgraph(state: PipelineState) -> PipelineState:
 def run_pipeline(log_path: str | Path = DEFAULT_LOG,
                  use_llm: bool = False,
                  force_plain: bool = False,
-                 drill: bool = False) -> PipelineState:
+                 drill: bool = False,
+                 drill_lies: int = 2) -> PipelineState:
     state = PipelineState(log_path=str(log_path), use_llm=use_llm,
-                          drill=drill, errors=[])
+                          drill=drill, drill_lies=drill_lies, errors=[])
     if force_plain:
         return _run_plain_chain(state)
     try:
@@ -141,10 +142,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--plain", action="store_true", help="skip LangGraph, use plain chain")
     p.add_argument("--drill", action="store_true",
                    help="red-team drill: inject false citations to prove verification catches them")
+    p.add_argument("--drill-lies", type=int, default=2, metavar="N",
+                   help="how many false citations the drill injects (default 2)")
     args = p.parse_args(argv)
 
     state = run_pipeline(args.logs, use_llm=args.llm, force_plain=args.plain,
-                         drill=args.drill)
+                         drill=args.drill, drill_lies=args.drill_lies)
     findings = state.get("findings", [])
 
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)

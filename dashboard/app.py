@@ -179,8 +179,17 @@ with st.sidebar:
                         help="Off = deterministic templates only. The demo never depends "
                              "on the network. Provider: " + _llm.describe())
     drill = st.toggle("🎯 Red-team drill", value=False,
-                      help="Injects two false citations before verification, to prove the "
+                      help="Injects false citations before verification, to prove the "
                            "Verification Layer catches them. Clearly labelled as a drill.")
+    drill_lies = 2
+    if drill:
+        drill_lies = st.select_slider(
+            "False citations to plant", options=[2, 10, 50, 100, 200, 400], value=2,
+            help="2 proves the mechanism. Larger numbers show it holding up under "
+                 "volume — but remember the verification rate you see afterwards is "
+                 "these planted lies being caught, not the agent hallucinating.")
+        st.caption(f"⚠️ Drill on — {drill_lies} planted lie(s). "
+                   "Unverified evidence below is the drill, not a real detection.")
 
     if st.button("▶ Run Investigation", width="stretch", type="primary"):
         with st.spinner("Running Analysis → Verification → Investigation..."):
@@ -190,13 +199,14 @@ with st.sidebar:
                     import requests
                     response = requests.post(
                         f"{API_URL}/run-investigation",
-                        params={"use_llm": use_llm, "drill": drill}, timeout=180)
+                        params={"use_llm": use_llm, "drill": drill,
+                                "drill_lies": drill_lies}, timeout=180)
                     done = response.ok
                 except Exception:
                     done = False
             if not done:                        # offline fallback: run in-process
                 from pipeline.langgraph_pipeline import run_pipeline
-                state = run_pipeline(use_llm=use_llm, drill=drill)
+                state = run_pipeline(use_llm=use_llm, drill=drill, drill_lies=drill_lies)
                 FINDINGS_PATH.write_text(
                     json.dumps(state.get("findings", []), indent=2, default=str),
                     encoding="utf-8")
