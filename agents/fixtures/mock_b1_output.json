@@ -1,0 +1,20 @@
+[
+  {
+    "incident_id": "INC-001",
+    "theory": "Repeated off-hours login from 192.168.1.55 for user jsmith at ~03:47-03:48, outside normal working hours, followed shortly by an unusually large UDP traffic spike from an external host to the same internal segment.",
+    "confidence": 0.82,
+    "cited_rows": ["R003", "R004", "R005", "R006", "R007"]
+  },
+  {
+    "incident_id": "INC-002",
+    "theory": "Rapid TCP port scan against internal host 10.0.0.1 from external IP 198.51.100.23, consistent with reconnaissance activity ahead of a targeted attack.",
+    "confidence": 0.9,
+    "cited_rows": ["R009", "R010"]
+  },
+  {
+    "incident_id": "INC-003",
+    "theory": "Suspicious login burst from 192.168.1.10 at an unusual hour with an unrecognized device fingerprint.",
+    "confidence": 0.7,
+    "cited_rows": ["R001", "R999"]
+  }
+]

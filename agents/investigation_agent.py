@@ -123,7 +123,10 @@ EVENT_RISK: Dict[str, float] = {
 SEVERITY_RISK: Dict[str, float] = {
     "critical": 1.00,
     "high": 0.85,
+    "warning": 0.55,      # dominant label in data/normalized_logs.csv (D3 schema)
+    "warn": 0.55,
     "medium": 0.55,
+    "notice": 0.30,
     "low": 0.30,
     "informational": 0.10,
     "info": 0.10,
@@ -302,19 +305,36 @@ def build_evidence(incident: Dict[str, Any],
 # --------------------------------------------------------------------------- #
 
 def _row_weight(row: Dict[str, Any]) -> float:
-    """Danger weight for a single evidence row, from event_type then severity."""
+    """Danger weight for a single evidence row, from event_type AND severity.
+
+    Both signals are consulted and the strongest wins. Returning on the first
+    event_type hit (the previous behaviour) under-rated real data badly: our
+    normalized logs use generic event types where the danger is carried by the
+    severity column, so a "login_success" marked severity=warning -- the actual
+    breach login in INC-001, straight after 10 failed attempts -- scored 0.20
+    off the generic "login" key and never looked at its severity, ranking it
+    *below* the failed logins around it.
+    """
+    candidates = [0.0]
+
     event = _norm_key(row.get("event_type"))
     if event in EVENT_RISK:
-        return EVENT_RISK[event]
-    if event:
+        candidates.append(EVENT_RISK[event])
+    elif event:
         # Partial match, e.g. "ssh_brute_force" -> brute_force, "dos_hulk" -> ddos.
-        for known, weight in EVENT_RISK.items():
-            if known in event or event in known:
-                return weight
+        # Take the strongest match, not whichever the dict happens to yield first.
+        candidates.extend(
+            weight for known, weight in EVENT_RISK.items()
+            if known in event or event in known
+        )
+
     severity = _norm_key(row.get("severity"))
     if severity in SEVERITY_RISK:
-        return SEVERITY_RISK[severity]
-    return 0.5  # unknown event type: treat as middling, never as harmless
+        candidates.append(SEVERITY_RISK[severity])
+
+    best = max(candidates)
+    # Nothing recognised at all: middling, never harmless.
+    return best if best > 0.0 else 0.5
 
 
 def score_incident(incident: Dict[str, Any],
@@ -440,13 +460,19 @@ def _template_explanation(incident: Dict[str, Any],
     return " ".join(lines)
 
 
-def _ground_check(text: str, evidence: List[Dict[str, Any]]) -> bool:
-    """Reject an explanation that cites an IP absent from the verified evidence.
+def _ground_check(text: str,
+                  evidence: List[Dict[str, Any]],
+                  extra_context: str = "") -> bool:
+    """Reject an explanation that cites an IP we never showed the model.
 
     A cheap hallucination guard on top of the Verification Agent: the LLM may
-    only talk about data we actually handed it.
+    only talk about data we actually handed it. ``extra_context`` must carry
+    every other part of the prompt (notably B1's theory, which routinely names
+    IPs that are not in an evidence column) -- otherwise a faithful summary
+    gets thrown away as ungrounded just for repeating its own input.
     """
     allowed = " ".join(json.dumps(e) for e in evidence if e["verified"])
+    allowed += " " + (extra_context or "")
     return all(ip in allowed for ip in set(IPV4_RE.findall(text)))
 
 
@@ -498,7 +524,7 @@ def _llm_explanation(incident: Dict[str, Any],
 
     if not text:
         return None, "template_empty_response"
-    if not _ground_check(text, evidence):
+    if not _ground_check(text, evidence, json.dumps(payload, default=str)):
         # The model referenced data that is not in the verified evidence.
         return None, "template_llm_ungrounded"
     return text, "llm"
