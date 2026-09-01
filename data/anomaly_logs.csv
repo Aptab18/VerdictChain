@@ -1,0 +1,201 @@
+row_id,timestamp,source_ip,destination_ip,event_type,username,protocol,bytes,status,device,severity,message
+D001,2026-09-01 02:43:12,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,500,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D002,2026-09-01 02:44:15,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,506,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D003,2026-09-01 02:45:18,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,512,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D004,2026-09-01 02:46:21,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,518,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D005,2026-09-01 02:47:24,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,524,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D006,2026-09-01 02:48:27,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,530,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D007,2026-09-01 02:49:30,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,536,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D008,2026-09-01 02:50:33,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,542,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D009,2026-09-01 02:51:36,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,548,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D010,2026-09-01 02:52:39,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,554,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D011,2026-09-01 02:53:42,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,560,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D012,2026-09-01 02:54:45,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,566,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D013,2026-09-01 02:55:48,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,572,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D014,2026-09-01 02:56:51,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,578,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D015,2026-09-01 02:57:54,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,584,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D016,2026-09-01 02:58:57,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,590,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D017,2026-09-01 02:59:00,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,596,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D018,2026-09-01 02:00:03,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,602,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D019,2026-09-01 02:01:06,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,608,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D020,2026-09-01 02:02:09,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,614,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D021,2026-09-01 02:03:12,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,620,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D022,2026-09-01 02:04:15,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,626,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D023,2026-09-01 02:05:18,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,632,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D024,2026-09-01 02:06:21,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,638,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D025,2026-09-01 02:07:24,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,644,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D026,2026-09-01 02:08:27,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,650,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D027,2026-09-01 02:09:30,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,656,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D028,2026-09-01 02:10:33,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,662,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D029,2026-09-01 02:11:36,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,668,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D030,2026-09-01 02:12:39,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,674,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D031,2026-09-01 03:13:42,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,680,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D032,2026-09-01 03:14:45,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,686,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D033,2026-09-01 03:15:48,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,692,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D034,2026-09-01 03:16:51,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,698,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D035,2026-09-01 03:17:54,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,704,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D036,2026-09-01 03:18:57,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,710,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D037,2026-09-01 03:19:00,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,716,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D038,2026-09-01 03:20:03,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,722,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D039,2026-09-01 03:21:06,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,728,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D040,2026-09-01 03:22:09,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,734,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D041,2026-09-01 03:23:12,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,740,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D042,2026-09-01 03:24:15,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,746,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D043,2026-09-01 03:25:18,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,752,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D044,2026-09-01 03:26:21,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,758,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D045,2026-09-01 03:27:24,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,764,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D046,2026-09-01 03:28:27,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,770,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D047,2026-09-01 03:29:30,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,776,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D048,2026-09-01 03:30:33,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,782,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D049,2026-09-01 03:31:36,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,788,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D050,2026-09-01 03:32:39,185.72.44.19,10.0.0.10,LOGIN,admin,HTTPS,794,SUCCESS,Unknown-Laptop,HIGH,Admin login during unusual hours
+D051,2026-09-01 10:21:15,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,390,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D052,2026-09-01 10:21:17,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,391,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D053,2026-09-01 10:21:19,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,392,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D054,2026-09-01 10:21:21,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,393,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D055,2026-09-01 10:21:23,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,394,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D056,2026-09-01 10:21:25,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,395,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D057,2026-09-01 10:21:27,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,396,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D058,2026-09-01 10:21:29,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,397,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D059,2026-09-01 10:21:31,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,398,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D060,2026-09-01 10:21:33,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,399,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D061,2026-09-01 10:21:35,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,400,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D062,2026-09-01 10:21:37,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,401,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D063,2026-09-01 10:21:39,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,402,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D064,2026-09-01 10:21:41,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,403,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D065,2026-09-01 10:21:43,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,404,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D066,2026-09-01 10:21:45,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,405,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D067,2026-09-01 10:21:47,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,406,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D068,2026-09-01 10:21:49,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,407,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D069,2026-09-01 10:21:51,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,408,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D070,2026-09-01 10:21:53,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,409,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D071,2026-09-01 10:22:55,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,390,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D072,2026-09-01 10:22:57,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,391,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D073,2026-09-01 10:22:59,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,392,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D074,2026-09-01 10:22:01,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,393,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D075,2026-09-01 10:22:03,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,394,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D076,2026-09-01 10:22:05,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,395,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D077,2026-09-01 10:22:07,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,396,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D078,2026-09-01 10:22:09,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,397,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D079,2026-09-01 10:22:11,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,398,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D080,2026-09-01 10:22:13,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,399,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D081,2026-09-01 10:22:15,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,400,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D082,2026-09-01 10:22:17,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,401,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D083,2026-09-01 10:22:19,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,402,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D084,2026-09-01 10:22:21,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,403,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D085,2026-09-01 10:22:23,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,404,FAILED,Unknown-Device,HIGH,Repeated failed admin login attempt
+D086,2026-09-01 10:22:25,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,405,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D087,2026-09-01 10:22:27,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,406,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D088,2026-09-01 10:22:29,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,407,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D089,2026-09-01 10:22:31,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,408,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D090,2026-09-01 10:22:33,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,409,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D091,2026-09-01 10:23:35,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,390,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D092,2026-09-01 10:23:37,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,391,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D093,2026-09-01 10:23:39,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,392,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D094,2026-09-01 10:23:41,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,393,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D095,2026-09-01 10:23:43,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,394,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D096,2026-09-01 10:23:45,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,395,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D097,2026-09-01 10:23:47,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,396,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D098,2026-09-01 10:23:49,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,397,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D099,2026-09-01 10:23:51,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,398,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D100,2026-09-01 10:23:53,91.203.44.17,10.0.0.10,LOGIN,admin,HTTPS,399,FAILED,Unknown-Device,CRITICAL,Repeated failed admin login attempt
+D101,2026-09-01 14:32:10,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,780000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D102,2026-09-01 14:32:11,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,786500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D103,2026-09-01 14:32:12,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,793000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D104,2026-09-01 14:32:13,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,799500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D105,2026-09-01 14:32:14,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,806000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D106,2026-09-01 14:32:15,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,812500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D107,2026-09-01 14:32:16,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,819000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D108,2026-09-01 14:32:17,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,825500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D109,2026-09-01 14:32:18,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,832000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D110,2026-09-01 14:32:19,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,838500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D111,2026-09-01 14:32:20,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,845000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D112,2026-09-01 14:32:21,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,851500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D113,2026-09-01 14:32:22,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,858000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D114,2026-09-01 14:32:23,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,864500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D115,2026-09-01 14:32:24,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,871000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D116,2026-09-01 14:32:25,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,877500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D117,2026-09-01 14:32:26,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,884000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D118,2026-09-01 14:32:27,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,890500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D119,2026-09-01 14:32:28,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,897000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D120,2026-09-01 14:32:29,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,903500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D121,2026-09-01 14:32:30,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,910000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D122,2026-09-01 14:32:31,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,916500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D123,2026-09-01 14:32:32,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,923000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D124,2026-09-01 14:32:33,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,929500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D125,2026-09-01 14:32:34,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,936000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D126,2026-09-01 14:33:35,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,942500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D127,2026-09-01 14:33:36,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,949000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D128,2026-09-01 14:33:37,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,955500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D129,2026-09-01 14:33:38,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,962000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D130,2026-09-01 14:33:39,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,968500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D131,2026-09-01 14:33:40,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,975000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D132,2026-09-01 14:33:41,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,981500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D133,2026-09-01 14:33:42,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,988000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D134,2026-09-01 14:33:43,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,994500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D135,2026-09-01 14:33:44,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1001000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D136,2026-09-01 14:33:45,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1007500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D137,2026-09-01 14:33:46,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1014000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D138,2026-09-01 14:33:47,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1020500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D139,2026-09-01 14:33:48,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1027000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D140,2026-09-01 14:33:49,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1033500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D141,2026-09-01 14:33:50,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1040000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D142,2026-09-01 14:33:51,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1046500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D143,2026-09-01 14:33:52,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1053000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D144,2026-09-01 14:33:53,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1059500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D145,2026-09-01 14:33:54,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1066000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D146,2026-09-01 14:33:55,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1072500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D147,2026-09-01 14:33:56,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1079000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D148,2026-09-01 14:33:57,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1085500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D149,2026-09-01 14:33:58,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1092000,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D150,2026-09-01 14:33:59,45.77.21.90,10.0.0.20,NETWORK_REQUEST,user01,TCP,1098500,SUCCESS,Unknown-Server,HIGH,Unusually large network traffic volume
+D151,2026-09-01 16:47:03,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,600,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D152,2026-09-01 16:48:05,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,630,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D153,2026-09-01 16:49:07,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,660,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D154,2026-09-01 16:50:09,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,690,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D155,2026-09-01 16:51:11,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,720,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D156,2026-09-01 16:52:13,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,750,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D157,2026-09-01 16:53:15,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,780,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D158,2026-09-01 16:54:17,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,810,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D159,2026-09-01 16:55:19,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,840,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D160,2026-09-01 16:56:21,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,870,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D161,2026-09-01 16:57:23,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,900,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D162,2026-09-01 16:58:25,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,930,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D163,2026-09-01 16:59:27,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,960,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D164,2026-09-01 16:00:29,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,990,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D165,2026-09-01 16:01:31,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1020,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D166,2026-09-01 16:02:33,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1050,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D167,2026-09-01 16:03:35,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1080,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D168,2026-09-01 16:04:37,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1110,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D169,2026-09-01 16:05:39,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1140,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D170,2026-09-01 16:06:41,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1170,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D171,2026-09-01 16:07:43,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1200,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D172,2026-09-01 16:08:45,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1230,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D173,2026-09-01 16:09:47,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1260,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D174,2026-09-01 16:10:49,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1290,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D175,2026-09-01 16:11:51,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1320,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D176,2026-09-01 17:12:53,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1350,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D177,2026-09-01 17:13:55,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1380,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D178,2026-09-01 17:14:57,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1410,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D179,2026-09-01 17:15:59,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1440,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D180,2026-09-01 17:16:01,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1470,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D181,2026-09-01 17:17:03,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1500,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D182,2026-09-01 17:18:05,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1530,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D183,2026-09-01 17:19:07,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1560,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D184,2026-09-01 17:20:09,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1590,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D185,2026-09-01 17:21:11,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1620,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D186,2026-09-01 17:22:13,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1650,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D187,2026-09-01 17:23:15,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1680,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D188,2026-09-01 17:24:17,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1710,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D189,2026-09-01 17:25:19,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1740,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D190,2026-09-01 17:26:21,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1770,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D191,2026-09-01 17:27:23,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1800,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D192,2026-09-01 17:28:25,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1830,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D193,2026-09-01 17:29:27,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1860,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D194,2026-09-01 17:30:29,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1890,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D195,2026-09-01 17:31:31,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1920,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D196,2026-09-01 17:32:33,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,1950,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D197,2026-09-01 17:33:35,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,1980,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D198,2026-09-01 17:34:37,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,2010,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D199,2026-09-01 17:35:39,103.44.82.11,10.0.0.15,LOGIN,employee01,HTTPS,2040,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
+D200,2026-09-01 17:36:41,103.44.82.11,10.0.0.15,FILE_ACCESS,employee01,HTTPS,2070,SUCCESS,Unknown-Android,HIGH,Employee account accessed from unrecognized device
